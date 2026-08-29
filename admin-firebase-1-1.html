@@ -1,0 +1,1964 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Portal — Kaur's Kitchen (Rewari)</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="data:,">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,500&family=Inter:wght@400;500;600;700;800&display=swap');
+
+:root{
+  --cream:        #FBF3E6;
+  --cream-deep:   #F3E5CE;
+  --paper:        #FFFDF9;
+  --ink:          #2A2016;
+  --ink-soft:     #6E5F4E;
+  --ink-faint:    #9C8D7A;
+  --marigold:     #E2900C;
+  --marigold-deep:#B96F00;
+  --marigold-tint:#FDF0D9;
+  --maroon:       #9A3324;
+  --maroon-deep:  #7A2519;
+  --maroon-tint:  #FBE7E2;
+  --sage:         #4B7A52;
+  --sage-tint:    #E7F1E5;
+  --white:        #FFFFFF;
+  --line:         rgba(42,32,22,0.10);
+  --line-strong:  rgba(42,32,22,0.18);
+  --shadow-sm:    0 2px 10px rgba(42,32,22,0.06);
+  --shadow-md:    0 10px 28px rgba(42,32,22,0.10);
+  --shadow-lg:    0 24px 60px rgba(42,32,22,0.18);
+  --r-sm: 10px; --r-md: 14px; --r-lg: 20px; --r-pill: 999px;
+  --font-display: 'Fraunces', serif;
+  --font-body: 'Inter', sans-serif;
+  --sidebar-w: 240px;
+  --topbar-h: 64px;
+  --ease: cubic-bezier(.22,.68,0,1);
+}
+
+*{ box-sizing:border-box; }
+html,body{ height:100%; }
+body{
+  margin:0; font-family:var(--font-body); background:var(--cream); color:var(--ink);
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4{ font-family:var(--font-display); margin:0; font-weight:600; color:var(--ink); }
+p{ margin:0; }
+a{ color:inherit; text-decoration:none; }
+button{ font-family:inherit; cursor:pointer; }
+input,select,textarea{ font-family:inherit; }
+::-webkit-scrollbar{ width:9px; height:9px; }
+::-webkit-scrollbar-thumb{ background:var(--line-strong); border-radius:6px; }
+
+/* ============ LOGIN GATE ============ */
+.login-gate{
+  min-height:100vh; display:flex; align-items:center; justify-content:center; padding:20px;
+  background: radial-gradient(circle at 20% 20%, rgba(226,144,12,.10), transparent 55%), radial-gradient(circle at 85% 80%, rgba(154,51,36,.10), transparent 55%), var(--cream);
+}
+.login-card{
+  width:100%; max-width:380px; background:var(--white); border-radius:var(--r-lg); box-shadow:var(--shadow-lg); padding:34px 30px;
+}
+.login-brand{ display:flex; align-items:center; gap:10px; margin-bottom:22px; }
+.login-brand .mark{ width:42px; height:42px; border-radius:50%; background:conic-gradient(from 200deg, var(--marigold), var(--maroon), var(--marigold)); display:flex; align-items:center; justify-content:center; color:#fff; font-family:var(--font-display); font-weight:700; }
+.login-brand b{ font-family:var(--font-display); font-size:18px; color:var(--maroon-deep); display:block; }
+.login-brand span{ font-size:11px; color:var(--ink-soft); letter-spacing:.05em; }
+.login-note{ font-size:12px; color:var(--ink-faint); margin-top:16px; line-height:1.6; background:var(--cream-deep); padding:12px 14px; border-radius:var(--r-md); }
+
+/* ============ SHELL LAYOUT ============ */
+.admin-shell{ display:flex; min-height:100vh; }
+.sidebar{
+  width:var(--sidebar-w); flex-shrink:0; background:var(--ink); color:var(--cream); display:flex; flex-direction:column;
+  position:fixed; top:0; bottom:0; left:0; z-index:50; transition:transform .28s var(--ease);
+}
+.sidebar-brand{ display:flex; align-items:center; gap:10px; padding:20px 18px; border-bottom:1px solid rgba(251,243,230,.1); }
+.sidebar-brand .mark{ width:36px; height:36px; border-radius:50%; background:conic-gradient(from 200deg, var(--marigold), var(--maroon), var(--marigold)); display:flex; align-items:center; justify-content:center; color:#fff; font-family:var(--font-display); font-weight:700; font-size:14px; flex-shrink:0; }
+.sidebar-brand b{ font-family:var(--font-display); font-size:15px; display:block; color:#fff; }
+.sidebar-brand span{ font-size:10px; color:rgba(251,243,230,.6); letter-spacing:.05em; }
+.sidebar-nav{ flex:1; padding:14px 10px; overflow-y:auto; }
+.sidebar-nav a{
+  display:flex; align-items:center; gap:11px; padding:11px 12px; border-radius:var(--r-md); font-weight:600; font-size:13.5px;
+  color:rgba(251,243,230,.68); margin-bottom:3px; transition:background .15s, color .15s;
+}
+.sidebar-nav a svg{ flex-shrink:0; opacity:.85; }
+.sidebar-nav a:hover{ background:rgba(251,243,230,.06); color:#fff; }
+.sidebar-nav a.active{ background:var(--marigold); color:#fff; }
+.sidebar-nav a.active svg{ opacity:1; }
+.sidebar-foot{ padding:14px; border-top:1px solid rgba(251,243,230,.1); }
+.sidebar-foot a{ display:flex; align-items:center; gap:8px; font-size:12.5px; font-weight:700; color:rgba(251,243,230,.7); padding:9px 10px; border-radius:var(--r-md); }
+.sidebar-foot a:hover{ background:rgba(251,243,230,.08); color:#fff; }
+
+.main-area{ flex:1; margin-left:var(--sidebar-w); display:flex; flex-direction:column; min-width:0; }
+.topbar{
+  height:var(--topbar-h); background:var(--paper); border-bottom:1px solid var(--line); display:flex; align-items:center;
+  justify-content:space-between; padding:0 24px; position:sticky; top:0; z-index:40;
+}
+.topbar h1{ font-size:19px; }
+.topbar-actions{ display:flex; align-items:center; gap:10px; }
+.hamburger{ display:none; background:none; border:none; padding:8px; }
+.content{ padding:26px; flex:1; }
+
+@media (max-width: 900px){
+  .sidebar{ transform:translateX(-100%); box-shadow:var(--shadow-lg); }
+  .sidebar.open{ transform:translateX(0); }
+  .main-area{ margin-left:0; }
+  .hamburger{ display:flex; }
+  .sidebar-overlay{ position:fixed; inset:0; background:rgba(20,14,8,.4); z-index:45; opacity:0; pointer-events:none; transition:opacity .2s; }
+  .sidebar-overlay.open{ opacity:1; pointer-events:auto; }
+}
+
+/* ============ BUTTONS ============ */
+.btn{ display:inline-flex; align-items:center; justify-content:center; gap:7px; font-weight:700; font-size:13.5px; border:none; border-radius:var(--r-pill); padding:10px 18px; transition:transform .12s var(--ease), box-shadow .12s, background .12s; white-space:nowrap; }
+.btn:active{ transform:scale(.97); }
+.btn-primary{ background:var(--marigold); color:#fff; box-shadow:0 6px 16px rgba(226,144,12,.3); }
+.btn-primary:hover{ background:var(--marigold-deep); }
+.btn-outline{ background:transparent; color:var(--ink); border:1.5px solid var(--line-strong); }
+.btn-outline:hover{ border-color:var(--ink); background:var(--white); }
+.btn-danger{ background:var(--maroon-tint); color:var(--maroon-deep); }
+.btn-danger:hover{ background:var(--maroon); color:#fff; }
+.btn-ghost{ background:var(--white); color:var(--ink); box-shadow:var(--shadow-sm); }
+.btn-sm{ padding:7px 13px; font-size:12.5px; }
+.btn[disabled]{ opacity:.5; cursor:not-allowed; }
+.icon-btn{ width:36px; height:36px; border-radius:50%; background:var(--white); border:1.5px solid var(--line); display:flex; align-items:center; justify-content:center; color:var(--ink-soft); }
+.icon-btn:hover{ border-color:var(--marigold); color:var(--marigold-deep); }
+
+/* ============ CARDS / STATS ============ */
+.stat-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:26px; }
+@media (max-width:900px){ .stat-grid{ grid-template-columns:repeat(2,1fr); } }
+.stat-card{ background:var(--white); border-radius:var(--r-lg); padding:20px; box-shadow:var(--shadow-sm); }
+.stat-card .icn{ width:38px; height:38px; border-radius:11px; display:flex; align-items:center; justify-content:center; font-size:18px; margin-bottom:12px; }
+.stat-card b{ font-family:var(--font-display); font-size:26px; display:block; }
+.stat-card span{ font-size:12.5px; color:var(--ink-soft); font-weight:600; }
+.card{ background:var(--white); border-radius:var(--r-lg); box-shadow:var(--shadow-sm); padding:22px; }
+.section-title{ font-size:17px; margin-bottom:16px; }
+
+/* ============ TOOLBAR / FILTERS ============ */
+.toolbar{ display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:18px; flex-wrap:wrap; }
+.toolbar-left{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; flex:1; }
+.search-box{ display:flex; align-items:center; gap:8px; background:var(--white); border:1.5px solid var(--line-strong); border-radius:var(--r-pill); padding:8px 14px; min-width:220px; }
+.search-box input{ border:none; outline:none; background:transparent; font-size:13.5px; width:100%; }
+.select-mini{ padding:8px 13px; border-radius:var(--r-pill); border:1.5px solid var(--line-strong); background:var(--white); font-size:13px; font-weight:600; }
+
+/* ============ TABLE ============ */
+.table-wrap{ background:var(--white); border-radius:var(--r-lg); box-shadow:var(--shadow-sm); overflow:hidden; }
+table{ width:100%; border-collapse:collapse; }
+th{ text-align:left; font-size:11.5px; text-transform:uppercase; letter-spacing:.05em; color:var(--ink-faint); font-weight:700; padding:13px 16px; border-bottom:1.5px solid var(--line); white-space:nowrap; }
+td{ padding:12px 16px; border-bottom:1px solid var(--line); font-size:13.5px; vertical-align:middle; }
+tr:last-child td{ border-bottom:none; }
+tr:hover td{ background:var(--cream-deep); }
+.row-thumb{ width:42px; height:42px; border-radius:10px; object-fit:cover; background:var(--cream-deep); }
+.cell-name{ font-weight:700; }
+.cell-sub{ font-size:11.5px; color:var(--ink-faint); }
+.table-actions{ display:flex; gap:6px; justify-content:flex-end; }
+.empty-row td{ text-align:center; padding:50px 20px; color:var(--ink-faint); }
+
+/* ============ BADGES / TOGGLES ============ */
+.badge{ display:inline-flex; align-items:center; gap:4px; font-size:10.5px; font-weight:800; padding:4px 9px; border-radius:var(--r-pill); }
+.badge-marigold{ background:var(--marigold-tint); color:var(--marigold-deep); }
+.badge-sage{ background:var(--sage-tint); color:#2F5D34; }
+.badge-maroon{ background:var(--maroon-tint); color:var(--maroon-deep); }
+.badge-gray{ background:var(--cream-deep); color:var(--ink-soft); }
+.switch{ position:relative; display:inline-block; width:38px; height:22px; flex-shrink:0; }
+.switch input{ opacity:0; width:0; height:0; }
+.switch .track{ position:absolute; inset:0; background:var(--line-strong); border-radius:var(--r-pill); transition:background .15s; cursor:pointer; }
+.switch .track::before{ content:''; position:absolute; width:16px; height:16px; left:3px; top:3px; background:#fff; border-radius:50%; transition:transform .15s; box-shadow:0 1px 3px rgba(0,0,0,.25); }
+.switch input:checked + .track{ background:var(--marigold); }
+.switch input:checked + .track::before{ transform:translateX(16px); }
+.color-swatch{ width:26px; height:26px; border-radius:8px; border:2px solid var(--white); box-shadow:0 0 0 1.5px var(--line-strong); display:inline-block; }
+
+/* ============ DRAWER / MODAL FORM ============ */
+.drawer-overlay{ position:fixed; inset:0; background:rgba(20,14,8,.4); z-index:80; opacity:0; pointer-events:none; transition:opacity .22s var(--ease); }
+.drawer-overlay.open{ opacity:1; pointer-events:auto; }
+.form-drawer{
+  position:fixed; top:0; right:0; height:100%; width:min(520px,94vw); background:var(--paper); z-index:81; box-shadow:-16px 0 50px rgba(0,0,0,.18);
+  transform:translateX(105%); transition:transform .28s var(--ease); display:flex; flex-direction:column;
+}
+.form-drawer.open{ transform:translateX(0); }
+.form-drawer-head{ display:flex; align-items:center; justify-content:space-between; padding:18px 22px; border-bottom:1px solid var(--line); }
+.form-drawer-body{ padding:20px 22px; overflow-y:auto; flex:1; }
+.form-drawer-foot{ padding:16px 22px; border-top:1px solid var(--line); display:flex; gap:10px; }
+.form-drawer-foot .btn{ flex:1; }
+
+.field{ margin-bottom:16px; }
+.field label{ display:block; font-size:12.5px; font-weight:700; margin-bottom:6px; color:var(--ink-soft); }
+.field input, .field select, .field textarea{
+  width:100%; padding:11px 13px; border-radius:var(--r-md); border:1.5px solid var(--line-strong); background:var(--white);
+  font-size:13.5px; color:var(--ink); outline:none; transition:border-color .12s;
+}
+.field input:focus, .field select:focus, .field textarea:focus{ border-color:var(--marigold); }
+.field-hint{ font-size:11px; color:var(--ink-faint); margin-top:5px; }
+.field-row{ display:flex; gap:12px; }
+.field-row .field{ flex:1; }
+.checkbox-grid{ display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:16px; }
+.checkbox-row{ display:flex; align-items:center; gap:8px; font-size:13px; font-weight:600; background:var(--white); padding:10px 12px; border-radius:var(--r-md); border:1.5px solid var(--line); }
+.repeat-row{ display:flex; gap:8px; margin-bottom:8px; align-items:center; }
+.repeat-row input{ flex:1; }
+.repeat-row button{ flex-shrink:0; }
+.form-section-label{ font-size:12px; font-weight:800; text-transform:uppercase; letter-spacing:.05em; color:var(--ink-faint); margin:22px 0 10px; padding-top:16px; border-top:1px solid var(--line); }
+.form-section-label:first-child{ margin-top:0; padding-top:0; border-top:none; }
+.placeholder-gen{ display:flex; gap:8px; align-items:flex-end; background:var(--cream-deep); padding:12px; border-radius:var(--r-md); margin-bottom:10px; }
+.placeholder-gen .field{ margin-bottom:0; flex:1; }
+.img-preview-row{ display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; }
+.img-preview-row img{ width:52px; height:52px; border-radius:8px; object-fit:cover; box-shadow:var(--shadow-sm); }
+
+/* ============ ORDER DETAIL EXPAND ============ */
+.order-detail{ background:var(--cream-deep); padding:16px; }
+.order-detail-grid{ display:grid; grid-template-columns:1fr 1fr; gap:16px; font-size:13px; }
+@media (max-width:700px){ .order-detail-grid{ grid-template-columns:1fr; } }
+.order-detail h5{ font-size:12px; text-transform:uppercase; letter-spacing:.04em; color:var(--ink-faint); margin-bottom:8px; }
+.order-item-line{ display:flex; justify-content:space-between; font-size:13px; padding:4px 0; }
+.status-select{ padding:6px 10px; border-radius:var(--r-pill); border:1.5px solid var(--line-strong); font-size:12px; font-weight:700; background:var(--white); }
+
+/* ============ EMPTY STATE ============ */
+.empty-block{ text-align:center; padding:60px 20px; color:var(--ink-faint); }
+.empty-block .icn{ font-size:40px; margin-bottom:12px; }
+
+/* ============ TOAST ============ */
+.toast-stack{ position:fixed; top:18px; left:50%; transform:translateX(-50%); z-index:200; display:flex; flex-direction:column; gap:10px; }
+.toast{ background:var(--ink); color:var(--cream); padding:12px 18px; border-radius:var(--r-md); box-shadow:var(--shadow-lg); font-size:13px; font-weight:600; animation:toastIn .25s var(--ease); }
+.toast.success{ background:#2F5D34; }
+.toast.error{ background:var(--maroon-deep); }
+@keyframes toastIn{ from{ opacity:0; transform:translateY(-12px);} to{ opacity:1; transform:translateY(0);} }
+
+/* ============ DATA / SETTINGS PAGE ============ */
+.data-actions{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+@media (max-width:800px){ .data-actions{ grid-template-columns:1fr; } }
+.data-action-card{ background:var(--white); border-radius:var(--r-lg); padding:20px; box-shadow:var(--shadow-sm); }
+.data-action-card h4{ font-size:14.5px; margin-bottom:6px; }
+.data-action-card p{ font-size:12.5px; color:var(--ink-soft); margin-bottom:14px; line-height:1.55; }
+.danger-zone{ border:1.5px dashed var(--maroon); background:var(--maroon-tint); }
+.form-grid-2{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+@media (max-width:700px){ .form-grid-2{ grid-template-columns:1fr; } }
+
+.divider{ height:1px; background:var(--line); border:none; margin:18px 0; }
+.text-muted{ color:var(--ink-soft); }
+.text-faint{ color:var(--ink-faint); }
+.flex{ display:flex; } .items-center{ align-items:center; } .justify-between{ justify-content:space-between; }
+.gap-8{ gap:8px; } .gap-12{ gap:12px; }
+.mt-8{ margin-top:8px; } .mt-16{ margin-top:16px; } .mb-16{ margin-bottom:16px; }
+
+</style>
+</head>
+<body>
+<div id="app"></div>
+
+<!-- Firebase SDKs (compat build — works with plain script tags, no bundler needed) -->
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore-compat.js"></script>
+
+<script>
+/* ============================================================
+   FIREBASE CONFIG — Kaur's Kitchen (Rewari) project
+   ============================================================ */
+const firebaseConfig = {
+  apiKey: "AIzaSyBIdlYXwpPnxanEhL64rN6dDd_3kfadF9A",
+  authDomain: "kaurs-kitchen-rewari.firebaseapp.com",
+  projectId: "kaurs-kitchen-rewari",
+  storageBucket: "kaurs-kitchen-rewari.firebasestorage.app",
+  messagingSenderId: "398626817940",
+  appId: "1:398626817940:web:64aaba113855b34e893181",
+  measurementId: "G-BHEKGXZDVG"
+};
+
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.firestore();
+
+</script>
+
+<script>
+/* ============================================================
+   KAUR'S KITCHEN — DATA LAYER
+   All product/category/offer/review data lives here, decoupled
+   from the UI. Swap `image` fields for real photo paths later,
+   e.g. "/images/products/chicken-bhuna-masala.webp", with zero
+   changes needed elsewhere.
+   ============================================================ */
+
+/* ---- Placeholder image generator -------------------------------------
+   Produces a branded, plate-style SVG illustration (gradient backdrop +
+   ceramic plate + soft steam wisps + dish emoji) per product so the site
+   never shows a broken image before real photography is uploaded.
+   Replace KK.products[i].images[n] with a real file path when ready,
+   e.g. "/images/products/chicken-bhuna-masala.webp" — nothing else
+   in the UI needs to change. */
+function kkPlaceholder(emoji, from, to){
+  const uid = Math.random().toString(36).slice(2,8);
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="640" height="480" viewBox="0 0 640 480">
+    <defs>
+      <linearGradient id="bg${uid}" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="${from}"/><stop offset="1" stop-color="${to}"/>
+      </linearGradient>
+      <radialGradient id="plate${uid}" cx="0.4" cy="0.35" r="0.75">
+        <stop offset="0" stop-color="#FFFDF9"/><stop offset="1" stop-color="#F1E7D6"/>
+      </radialGradient>
+      <filter id="soft${uid}" x="-40%" y="-40%" width="180%" height="180%">
+        <feGaussianBlur stdDeviation="14"/>
+      </filter>
+    </defs>
+    <rect width="640" height="480" fill="url(#bg${uid})"/>
+    <circle cx="560" cy="40" r="130" fill="rgba(255,255,255,0.08)"/>
+    <circle cx="40" cy="450" r="110" fill="rgba(255,255,255,0.07)"/>
+    <g opacity="0.5">
+      <circle cx="90" cy="70" r="3" fill="#fff"/><circle cx="120" cy="55" r="2" fill="#fff"/>
+      <circle cx="550" cy="410" r="3" fill="#fff"/><circle cx="580" cy="430" r="2" fill="#fff"/>
+    </g>
+    <ellipse cx="320" cy="410" rx="150" ry="22" fill="rgba(20,14,8,0.16)" filter="url(#soft${uid})"/>
+    <circle cx="320" cy="248" r="168" fill="url(#plate${uid})" stroke="rgba(255,255,255,0.9)" stroke-width="10"/>
+    <circle cx="320" cy="248" r="140" fill="none" stroke="rgba(42,32,22,0.06)" stroke-width="2"/>
+    <g stroke="rgba(255,255,255,0.85)" stroke-width="7" stroke-linecap="round" fill="none" opacity="0.9">
+      <path d="M262 130 C250 100 268 78 258 52"/>
+      <path d="M300 122 C288 92 306 70 296 44"/>
+      <path d="M340 122 C352 92 334 70 344 44"/>
+    </g>
+    <text x="320" y="270" font-size="140" text-anchor="middle" dominant-baseline="middle">${emoji}</text>
+  </svg>`;
+  return "data:image/svg+xml;utf8," + encodeURIComponent(svg);
+}
+
+const KK = {};
+
+KK.categories = [
+  { id:"veg-main",   name:"Veg Mains",   icon:"🥘", color:["#8FBF6F","#4B7A52"] },
+  { id:"chicken",    name:"Chicken",     icon:"🍗", color:["#E2900C","#B96F00"] },
+  { id:"mutton",     name:"Mutton",      icon:"🍖", color:["#9A3324","#6E241A"] },
+  { id:"fish",       name:"Fish",        icon:"🐟", color:["#3C7DA6","#265675"] },
+  { id:"egg",        name:"Egg",         icon:"🥚", color:["#E0B23A","#B98A18"] },
+  { id:"chinese",    name:"Chinese",     icon:"🥡", color:["#C24141","#8E2A2A"] },
+  { id:"maggi",      name:"Maggi",       icon:"🍜", color:["#D9A441","#A6741C"] },
+  { id:"sandwich",   name:"Sandwiches",  icon:"🥪", color:["#CE8B4E","#9C5F2A"] },
+  { id:"beverages",  name:"Beverages",   icon:"🥤", color:["#5C9EAD","#3A7684"] },
+  { id:"momos",      name:"Momos",       icon:"🥟", color:["#B5762E","#7E4F1B"] },
+  { id:"rice-roti",  name:"Rice &amp; Roti", icon:"🍚", color:["#D6B24A","#A6821C"] },
+  { id:"desserts",   name:"Desserts",    icon:"🍮", color:["#C97A9A","#8E4C67"] },
+  { id:"combos",     name:"Combos",      icon:"🍱", color:["#4B7A52","#2F5D34"] },
+];
+
+KK.products = [
+  {
+    id:"chicken-bhuna-masala", name:"Chicken Bhuna Masala", slug:"chicken-bhuna-masala", category:"chicken", subcategory:"Chicken Specials",
+    veg:false, price:220, discountPrice:null, rating:4.8, reviewCount:186, bestseller:true, featured:true, available:true,
+    spicyLevel:"Medium", servingSize:"Serves 2", preparationTime:"25-30 min",
+    description:"Slow-cooked chicken bhunoed in a rich onion-tomato masala with hand-ground spices.",
+    detailedDescription:"Our Chicken Bhuna Masala is prepared the traditional Punjabi way — chicken pieces are seared and then bhunoed (dry-roasted) with onions, tomatoes, ginger-garlic and a hand-ground masala until every piece soaks up deep, layered flavour. Finished with a touch of ghee for that homely richness.",
+    ingredients:["Chicken","Onion","Tomato","Ginger-Garlic","Garam Masala","Ghee","Coriander"],
+    tags:["bestseller","spicy","punjabi","curry"],
+    images:[kkPlaceholder("🍗","#E2900C","#B96F00"), kkPlaceholder("🍛","#C97A00","#9A3324")],
+    variants:[{ name:"Spice Level", options:["Mild","Medium","Spicy"] }],
+    addons:[{ id:"a1", name:"Extra Gravy", price:30 },{ id:"a2", name:"Butter Naan", price:35 },{ id:"a3", name:"Extra Chicken", price:60 }]
+  },
+  {
+    id:"handi-chicken", name:"Handi Chicken", slug:"handi-chicken", category:"chicken", subcategory:"Chicken Specials",
+    veg:false, price:250, discountPrice:230, rating:4.7, reviewCount:142, bestseller:true, featured:true, available:true,
+    spicyLevel:"Medium", servingSize:"Serves 2-3", preparationTime:"30 min",
+    description:"Chicken simmered in a clay-handi style creamy tomato gravy.",
+    detailedDescription:"Cooked low and slow in a handi for that unmistakable smoky depth, our Handi Chicken combines a velvety tomato-cashew gravy with tender chicken pieces, finished with fresh cream and kasuri methi.",
+    ingredients:["Chicken","Tomato","Cashew","Cream","Kasuri Methi"],
+    tags:["bestseller","creamy","punjabi"],
+    images:[kkPlaceholder("🍗","#B96F00","#7A4A00")],
+    variants:[{ name:"Spice Level", options:["Mild","Medium","Spicy"] }],
+    addons:[{ id:"a1", name:"Extra Gravy", price:30 },{ id:"a4", name:"Tandoori Roti", price:20 }]
+  },
+  {
+    id:"dehati-chicken", name:"Dehati Chicken", slug:"dehati-chicken", category:"chicken", subcategory:"Chicken Specials",
+    veg:false, price:230, discountPrice:null, rating:4.6, reviewCount:98, bestseller:false, featured:false, available:true,
+    spicyLevel:"Spicy", servingSize:"Serves 2", preparationTime:"28 min",
+    description:"Village-style rustic chicken curry with bold desi spices.",
+    detailedDescription:"A rustic, no-frills preparation the way it's made in Rewari homes — bone-in chicken cooked with mustard oil, whole spices and a generous hand of red chilli for a bold, earthy kick.",
+    ingredients:["Chicken","Mustard Oil","Red Chilli","Whole Spices","Onion"],
+    tags:["spicy","rustic","desi"],
+    images:[kkPlaceholder("🍗","#9A3324","#6E241A")],
+    variants:[{ name:"Spice Level", options:["Medium","Spicy","Extra Spicy"] }],
+    addons:[{ id:"a4", name:"Tandoori Roti", price:20 },{ id:"a5", name:"Steamed Rice", price:40 }]
+  },
+  {
+    id:"authentic-punjabi-chicken", name:"Authentic Punjabi Chicken", slug:"authentic-punjabi-chicken", category:"chicken", subcategory:"Chicken Specials",
+    veg:false, price:240, discountPrice:null, rating:4.7, reviewCount:76, bestseller:false, featured:false, available:true,
+    spicyLevel:"Medium", servingSize:"Serves 2", preparationTime:"30 min",
+    description:"Classic Punjabi-style chicken curry, rich and full-bodied.",
+    detailedDescription:"A timeless Punjabi curry built on a base of caramelised onions and tomatoes, layered with whole and ground spices, and simmered until the chicken is fall-off-the-bone tender.",
+    ingredients:["Chicken","Onion","Tomato","Yogurt","Whole Spices"],
+    tags:["punjabi","curry"],
+    images:[kkPlaceholder("🍗","#C97A00","#9A3324")],
+    variants:[{ name:"Spice Level", options:["Mild","Medium","Spicy"] }],
+    addons:[{ id:"a2", name:"Butter Naan", price:35 }]
+  },
+  {
+    id:"kfc-chicken", name:"KFC Style Chicken", slug:"kfc-chicken", category:"chicken", subcategory:"Chicken Specials",
+    veg:false, price:210, discountPrice:180, rating:4.5, reviewCount:210, bestseller:true, featured:false, available:true,
+    spicyLevel:"Medium", servingSize:"6 pcs", preparationTime:"20 min",
+    description:"Crispy fried chicken, golden and crunchy on the outside.",
+    detailedDescription:"Marinated overnight in a spiced buttermilk blend and double-fried for a crackling crust with juicy chicken inside — a crowd favourite for a reason.",
+    ingredients:["Chicken","Buttermilk","Spiced Flour Coating"],
+    tags:["crispy","fried","kids-favourite"],
+    images:[kkPlaceholder("🍗","#E2900C","#C97A00")],
+    variants:[],
+    addons:[{ id:"a6", name:"Cheese Dip", price:25 },{ id:"a7", name:"Fries", price:70 }]
+  },
+  {
+    id:"chilli-chicken", name:"Chilli Chicken", slug:"chilli-chicken", category:"chinese", subcategory:"Chinese & Snacks",
+    veg:false, price:200, discountPrice:null, rating:4.6, reviewCount:154, bestseller:true, featured:true, available:true,
+    spicyLevel:"Spicy", servingSize:"Serves 2", preparationTime:"18 min",
+    description:"Indo-Chinese wok-tossed chicken in a tangy chilli-soy glaze.",
+    detailedDescription:"Crispy fried chicken tossed on a high flame with capsicum, onions, garlic and a spicy-tangy soy-chilli sauce — sticky, punchy, and perfect with fried rice.",
+    ingredients:["Chicken","Capsicum","Onion","Soy Sauce","Green Chilli"],
+    tags:["indo-chinese","spicy","wok-tossed"],
+    images:[kkPlaceholder("🌶️","#C24141","#8E2A2A")],
+    variants:[{ name:"Style", options:["Dry","Gravy"] }],
+    addons:[{ id:"a8", name:"Fried Rice", price:90 },{ id:"a9", name:"Hakka Noodles", price:90 }]
+  },
+  {
+    id:"handi-mutton", name:"Handi Mutton", slug:"handi-mutton", category:"mutton", subcategory:"Mutton Specials",
+    veg:false, price:340, discountPrice:null, rating:4.8, reviewCount:64, bestseller:true, featured:true, available:true,
+    spicyLevel:"Medium", servingSize:"Serves 2-3", preparationTime:"45 min",
+    description:"Tender mutton slow-cooked in a rich handi gravy.",
+    detailedDescription:"Bone-in mutton, slow braised for hours in a clay handi with a deeply spiced onion-tomato masala, till the meat turns fork-tender and the gravy clings to every piece.",
+    ingredients:["Mutton","Onion","Tomato","Whole Spices","Ghee"],
+    tags:["bestseller","slow-cooked","rich"],
+    images:[kkPlaceholder("🍖","#9A3324","#6E241A")],
+    variants:[{ name:"Spice Level", options:["Mild","Medium","Spicy"] }],
+    addons:[{ id:"a4", name:"Tandoori Roti", price:20 },{ id:"a5", name:"Steamed Rice", price:40 }]
+  },
+  {
+    id:"champaran-mutton", name:"Champaran Mutton", slug:"champaran-mutton", category:"mutton", subcategory:"Mutton Specials",
+    veg:false, price:360, discountPrice:330, rating:4.9, reviewCount:52, bestseller:true, featured:true, available:true,
+    spicyLevel:"Medium", servingSize:"Serves 2-3", preparationTime:"50 min",
+    description:"Bihar's famous slow-dum mutton, cooked with mustard oil and whole spices.",
+    detailedDescription:"Sealed and slow-cooked in its own juices with mustard oil, garlic and whole spices, Champaran Mutton delivers an intensely aromatic gravy that's worth the wait.",
+    ingredients:["Mutton","Mustard Oil","Garlic","Whole Spices"],
+    tags:["signature","slow-dum","aromatic"],
+    images:[kkPlaceholder("🍖","#7A2519","#4A1610")],
+    variants:[],
+    addons:[{ id:"a5", name:"Steamed Rice", price:40 }]
+  },
+  {
+    id:"mutton-bhuna-masala", name:"Mutton Bhuna Masala", slug:"mutton-bhuna-masala", category:"mutton", subcategory:"Mutton Specials",
+    veg:false, price:330, discountPrice:null, rating:4.6, reviewCount:39, bestseller:false, featured:false, available:true,
+    spicyLevel:"Spicy", servingSize:"Serves 2", preparationTime:"45 min",
+    description:"Mutton bhunoed with onions and hand-ground masala.",
+    detailedDescription:"A drier, intensely flavoured preparation — mutton is bhunoed on slow flame with onions and a hand-ground masala until the spices coat every piece.",
+    ingredients:["Mutton","Onion","Hand-ground Masala"],
+    tags:["spicy","bhuna"],
+    images:[kkPlaceholder("🍖","#8E2A2A","#5C1A17")],
+    variants:[],
+    addons:[]
+  },
+  {
+    id:"mutton-dehati", name:"Mutton Dehati", slug:"mutton-dehati", category:"mutton", subcategory:"Mutton Specials",
+    veg:false, price:320, discountPrice:null, rating:4.5, reviewCount:28, bestseller:false, featured:false, available:true,
+    spicyLevel:"Spicy", servingSize:"Serves 2", preparationTime:"45 min",
+    description:"Rustic village-style mutton curry with a bold, earthy flavour.",
+    detailedDescription:"A no-shortcuts village-style mutton curry, cooked with mustard oil and coarsely pounded spices for a robust, rustic character.",
+    ingredients:["Mutton","Mustard Oil","Coarse Spices"],
+    tags:["rustic","desi"],
+    images:[kkPlaceholder("🍖","#6E241A","#3E1610")],
+    variants:[],
+    addons:[]
+  },
+  {
+    id:"palak-paneer", name:"Palak Paneer", slug:"palak-paneer", category:"veg-main", subcategory:"Veg Main Course",
+    veg:true, price:190, discountPrice:null, rating:4.7, reviewCount:132, bestseller:true, featured:true, available:true,
+    spicyLevel:"Mild", servingSize:"Serves 2", preparationTime:"20 min",
+    description:"Fresh paneer cubes in a silky pureed spinach gravy.",
+    detailedDescription:"Fresh spinach, blanched and pureed to a silky smooth base, gently spiced and finished with cream, cradling soft cubes of house-made paneer.",
+    ingredients:["Paneer","Spinach","Garlic","Cream"],
+    tags:["bestseller","healthy","creamy"],
+    images:[kkPlaceholder("🥬","#4B7A52","#2F5D34")],
+    variants:[{ name:"Spice Level", options:["Mild","Medium"] }],
+    addons:[{ id:"a2", name:"Butter Naan", price:35 },{ id:"a3", name:"Extra Paneer", price:40 }]
+  },
+  {
+    id:"butter-paneer-masala", name:"Butter Paneer Masala", slug:"butter-paneer-masala", category:"veg-main", subcategory:"Veg Main Course",
+    veg:true, price:210, discountPrice:190, rating:4.9, reviewCount:220, bestseller:true, featured:true, available:true,
+    spicyLevel:"Mild", servingSize:"Serves 2", preparationTime:"22 min",
+    description:"Paneer simmered in a luscious buttery tomato gravy.",
+    detailedDescription:"Our most-loved veg dish — soft paneer cubes bathed in a rich, buttery tomato-cashew gravy with a hint of sweetness and a swirl of cream.",
+    ingredients:["Paneer","Tomato","Butter","Cashew","Cream"],
+    tags:["bestseller","creamy","mild"],
+    images:[kkPlaceholder("🧈","#E2900C","#C97A00")],
+    variants:[],
+    addons:[{ id:"a2", name:"Butter Naan", price:35 },{ id:"a10", name:"Extra Gravy", price:30 }]
+  },
+  {
+    id:"kadhai-paneer", name:"Kadhai Paneer", slug:"kadhai-paneer", category:"veg-main", subcategory:"Veg Main Course",
+    veg:true, price:200, discountPrice:null, rating:4.6, reviewCount:88, bestseller:false, featured:false, available:true,
+    spicyLevel:"Medium", servingSize:"Serves 2", preparationTime:"20 min",
+    description:"Paneer and bell peppers tossed in a spiced kadhai masala.",
+    detailedDescription:"Paneer and colourful bell peppers wok-tossed with a freshly pounded kadhai masala of coriander seeds and dried red chilli — bold and fragrant.",
+    ingredients:["Paneer","Bell Pepper","Kadhai Masala"],
+    tags:["spicy","dry"],
+    images:[kkPlaceholder("🫑","#C24141","#8E2A2A")],
+    variants:[],
+    addons:[]
+  },
+  {
+    id:"malai-kofta", name:"Malai Kofta", slug:"malai-kofta", category:"veg-main", subcategory:"Veg Main Course",
+    veg:true, price:210, discountPrice:null, rating:4.7, reviewCount:71, bestseller:false, featured:true, available:true,
+    spicyLevel:"Mild", servingSize:"Serves 2", preparationTime:"25 min",
+    description:"Soft paneer-potato koftas in a creamy cashew gravy.",
+    detailedDescription:"Delicate koftas of paneer, potato and khoya, fried golden and gently simmered in a rich cashew-cream gravy — indulgent comfort food.",
+    ingredients:["Paneer","Potato","Khoya","Cashew","Cream"],
+    tags:["creamy","festive"],
+    images:[kkPlaceholder("🍡","#D9A441","#A6741C")],
+    variants:[],
+    addons:[{ id:"a2", name:"Butter Naan", price:35 }]
+  },
+  {
+    id:"dal-makhni", name:"Dal Makhni", slug:"dal-makhni", category:"veg-main", subcategory:"Veg Main Course",
+    veg:true, price:170, discountPrice:150, rating:4.8, reviewCount:165, bestseller:true, featured:true, available:true,
+    spicyLevel:"Mild", servingSize:"Serves 2-3", preparationTime:"6 hr slow-cook",
+    description:"Black lentils slow-cooked overnight with butter and cream.",
+    detailedDescription:"Whole black urad dal simmered low and slow overnight, finished with a generous swirl of butter and cream for that signature velvety Punjabi dal makhni texture.",
+    ingredients:["Urad Dal","Rajma","Butter","Cream","Tomato"],
+    tags:["bestseller","slow-cooked","comfort-food"],
+    images:[kkPlaceholder("🍲","#6E241A","#3E1610")],
+    variants:[],
+    addons:[{ id:"a5", name:"Steamed Rice", price:40 },{ id:"a2", name:"Butter Naan", price:35 }]
+  },
+  {
+    id:"rajma", name:"Rajma", slug:"rajma", category:"veg-main", subcategory:"Veg Main Course",
+    veg:true, price:160, discountPrice:null, rating:4.5, reviewCount:60, bestseller:false, featured:false, available:true,
+    spicyLevel:"Mild", servingSize:"Serves 2", preparationTime:"30 min",
+    description:"Red kidney beans in a classic home-style curry.",
+    detailedDescription:"Soft red kidney beans simmered in a comforting onion-tomato gravy — the quintessential home-cooked North Indian dal.",
+    ingredients:["Kidney Beans","Onion","Tomato","Cumin"],
+    tags:["comfort-food","homely"],
+    images:[kkPlaceholder("🫘","#9A3324","#6E241A")],
+    variants:[],
+    addons:[{ id:"a5", name:"Steamed Rice", price:40 }]
+  },
+  {
+    id:"egg-curry", name:"Egg Curry", slug:"egg-curry", category:"egg", subcategory:"Egg Specials",
+    veg:false, price:150, discountPrice:null, rating:4.5, reviewCount:47, bestseller:false, featured:false, available:true,
+    spicyLevel:"Medium", servingSize:"Serves 2", preparationTime:"20 min",
+    description:"Boiled eggs simmered in a spiced onion-tomato gravy.",
+    detailedDescription:"Hard-boiled eggs bathed in a warmly spiced onion-tomato masala — simple, homely and deeply satisfying.",
+    ingredients:["Eggs","Onion","Tomato","Garam Masala"],
+    tags:["homely","protein"],
+    images:[kkPlaceholder("🥚","#E0B23A","#B98A18")],
+    variants:[],
+    addons:[{ id:"a4", name:"Tandoori Roti", price:20 }]
+  },
+  {
+    id:"shahi-egg-bhurji", name:"Shahi Egg Bhurji", slug:"shahi-egg-bhurji", category:"egg", subcategory:"Egg Specials",
+    veg:false, price:140, discountPrice:null, rating:4.6, reviewCount:53, bestseller:true, featured:false, available:true,
+    spicyLevel:"Medium", servingSize:"Serves 2", preparationTime:"15 min",
+    description:"Scrambled eggs cooked shahi-style with onions and spices.",
+    detailedDescription:"A richer take on classic egg bhurji, cooked with extra butter, onions, tomatoes and a royal blend of spices.",
+    ingredients:["Eggs","Onion","Tomato","Butter"],
+    tags:["quick","protein"],
+    images:[kkPlaceholder("🍳","#D9A441","#A6741C")],
+    variants:[],
+    addons:[]
+  },
+  {
+    id:"masala-fish-curry", name:"Masala Fish Curry", slug:"masala-fish-curry", category:"fish", subcategory:"Fish Specials",
+    veg:false, price:260, discountPrice:null, rating:4.6, reviewCount:34, bestseller:false, featured:false, available:true,
+    spicyLevel:"Spicy", servingSize:"Serves 2", preparationTime:"30 min",
+    description:"Fresh fish simmered in a tangy, spiced curry.",
+    detailedDescription:"Fresh fish fillets cooked in a tangy tomato-tamarind curry, layered with mustard seeds and curry leaves for a bright, punchy flavour.",
+    ingredients:["Fish","Tomato","Tamarind","Mustard Seeds"],
+    tags:["tangy","spicy"],
+    images:[kkPlaceholder("🐟","#3C7DA6","#265675")],
+    variants:[],
+    addons:[{ id:"a5", name:"Steamed Rice", price:40 }]
+  },
+  {
+    id:"fried-fish", name:"Fried Fish", slug:"fried-fish", category:"fish", subcategory:"Fish Specials",
+    veg:false, price:230, discountPrice:null, rating:4.4, reviewCount:22, bestseller:false, featured:false, available:true,
+    spicyLevel:"Medium", servingSize:"Serves 2", preparationTime:"20 min",
+    description:"Crispy shallow-fried fish marinated in desi spices.",
+    detailedDescription:"Fish fillets marinated in a blend of desi spices and shallow-fried till golden and crisp on the outside, juicy within.",
+    ingredients:["Fish","Turmeric","Chilli Powder","Semolina Coating"],
+    tags:["crispy","fried"],
+    images:[kkPlaceholder("🐟","#265675","#173E52")],
+    variants:[],
+    addons:[]
+  },
+  {
+    id:"chilli-paneer", name:"Chilli Paneer", slug:"chilli-paneer", category:"chinese", subcategory:"Chinese & Snacks",
+    veg:true, price:190, discountPrice:null, rating:4.7, reviewCount:117, bestseller:true, featured:true, available:true,
+    spicyLevel:"Spicy", servingSize:"Serves 2", preparationTime:"18 min",
+    description:"Crispy paneer wok-tossed in a spicy Indo-Chinese sauce.",
+    detailedDescription:"Batter-fried paneer cubes tossed on a high flame with onions, capsicum, garlic and a fiery soy-chilli sauce.",
+    ingredients:["Paneer","Capsicum","Onion","Soy Sauce"],
+    tags:["indo-chinese","spicy","bestseller"],
+    images:[kkPlaceholder("🌶️","#C24141","#8E2A2A")],
+    variants:[{ name:"Style", options:["Dry","Gravy"] }],
+    addons:[{ id:"a8", name:"Fried Rice", price:90 }]
+  },
+  {
+    id:"hakka-noodles", name:"Veg Hakka Noodles", slug:"hakka-noodles", category:"chinese", subcategory:"Chinese & Snacks",
+    veg:true, price:150, discountPrice:null, rating:4.5, reviewCount:96, bestseller:false, featured:false, available:true,
+    spicyLevel:"Mild", servingSize:"Serves 2", preparationTime:"15 min",
+    description:"Stir-fried noodles tossed with fresh vegetables.",
+    detailedDescription:"Classic wok-tossed hakka noodles with julienned vegetables, soy and a touch of vinegar for that street-style tang.",
+    ingredients:["Noodles","Cabbage","Carrot","Capsicum","Soy Sauce"],
+    tags:["quick","street-style"],
+    images:[kkPlaceholder("🍜","#D9A441","#A6741C")],
+    variants:[],
+    addons:[{ id:"a11", name:"Extra Veggies", price:20 }]
+  },
+  {
+    id:"cheese-maggi", name:"Cheese Maggi", slug:"cheese-maggi", category:"maggi", subcategory:"Maggi Specials",
+    veg:true, price:90, discountPrice:null, rating:4.6, reviewCount:140, bestseller:true, featured:false, available:true,
+    spicyLevel:"Mild", servingSize:"1 bowl", preparationTime:"10 min",
+    description:"Everyone's favourite Maggi loaded with melted cheese.",
+    detailedDescription:"Classic masala Maggi noodles topped with generous melted cheese for the ultimate comfort bowl.",
+    ingredients:["Maggi Noodles","Cheese","Maggi Masala"],
+    tags:["comfort-food","cheesy","kids-favourite"],
+    images:[kkPlaceholder("🧀","#E0B23A","#B98A18")],
+    variants:[],
+    addons:[{ id:"a12", name:"Extra Cheese", price:20 }]
+  },
+  {
+    id:"punjabi-tadka-maggi", name:"Punjabi Tadka Maggi", slug:"punjabi-tadka-maggi", category:"maggi", subcategory:"Maggi Specials",
+    veg:true, price:80, discountPrice:null, rating:4.5, reviewCount:66, bestseller:false, featured:false, available:true,
+    spicyLevel:"Medium", servingSize:"1 bowl", preparationTime:"10 min",
+    description:"Maggi tempered with a punchy Punjabi tadka.",
+    detailedDescription:"Maggi noodles finished with a sizzling tadka of ghee, cumin, garlic and green chillies for a desi kick.",
+    ingredients:["Maggi Noodles","Ghee","Cumin","Garlic"],
+    tags:["desi","quick"],
+    images:[kkPlaceholder("🍜","#B98A18","#8A6412")],
+    variants:[],
+    addons:[]
+  },
+  {
+    id:"tandoori-paneer-sandwich", name:"Tandoori Paneer Sandwich", slug:"tandoori-paneer-sandwich", category:"sandwich", subcategory:"Sandwiches & Fries",
+    veg:true, price:120, discountPrice:null, rating:4.6, reviewCount:58, bestseller:false, featured:true, available:true,
+    spicyLevel:"Medium", servingSize:"1 sandwich", preparationTime:"12 min",
+    description:"Grilled sandwich stuffed with tandoori-spiced paneer.",
+    detailedDescription:"Toasted multigrain bread stuffed with smoky tandoori paneer, crunchy onions and a mint-mayo spread.",
+    ingredients:["Bread","Paneer","Tandoori Masala","Mint Mayo"],
+    tags:["grilled","protein"],
+    images:[kkPlaceholder("🥪","#CE8B4E","#9C5F2A")],
+    variants:[],
+    addons:[{ id:"a7", name:"Fries", price:70 }]
+  },
+  {
+    id:"cheese-corn-sandwich", name:"Cheese & Corn Sandwich", slug:"cheese-corn-sandwich", category:"sandwich", subcategory:"Sandwiches & Fries",
+    veg:true, price:110, discountPrice:100, rating:4.5, reviewCount:74, bestseller:true, featured:false, available:true,
+    spicyLevel:"Mild", servingSize:"1 sandwich", preparationTime:"10 min",
+    description:"Toasted sandwich loaded with cheese and sweet corn.",
+    detailedDescription:"A gooey, kid-friendly favourite — melted cheese and buttery sweet corn between crisp golden toasted bread.",
+    ingredients:["Bread","Cheese","Sweet Corn","Butter"],
+    tags:["cheesy","kids-favourite"],
+    images:[kkPlaceholder("🌽","#E0B23A","#B98A18")],
+    variants:[],
+    addons:[]
+  },
+  {
+    id:"french-fries", name:"French Fries", slug:"french-fries", category:"sandwich", subcategory:"Sandwiches & Fries",
+    veg:true, price:90, discountPrice:null, rating:4.4, reviewCount:112, bestseller:false, featured:false, available:true,
+    spicyLevel:"Mild", servingSize:"1 plate", preparationTime:"10 min",
+    description:"Crispy golden fries, salted just right.",
+    detailedDescription:"Classic thick-cut fries fried till golden and crisp, tossed lightly with our house seasoning.",
+    ingredients:["Potato","House Seasoning"],
+    tags:["crispy","snack"],
+    images:[kkPlaceholder("🍟","#E2900C","#C97A00")],
+    variants:[],
+    addons:[{ id:"a6", name:"Cheese Dip", price:25 }]
+  },
+  {
+    id:"cold-coffee-ice-cream", name:"Cold Coffee with Ice Cream", slug:"cold-coffee-ice-cream", category:"beverages", subcategory:"Beverages",
+    veg:true, price:120, discountPrice:null, rating:4.7, reviewCount:99, bestseller:true, featured:true, available:true,
+    spicyLevel:null, servingSize:"1 glass", preparationTime:"8 min",
+    description:"Chilled coffee blended with a scoop of vanilla ice cream.",
+    detailedDescription:"Rich, chilled coffee blended smooth with a generous scoop of vanilla ice cream and topped with chocolate shavings.",
+    ingredients:["Coffee","Milk","Vanilla Ice Cream"],
+    tags:["sweet","chilled"],
+    images:[kkPlaceholder("🥤","#5C9EAD","#3A7684")],
+    variants:[{ name:"Size", options:["Regular","Large"] }],
+    addons:[]
+  },
+  {
+    id:"punjabi-lassi", name:"Punjabi Lassi", slug:"punjabi-lassi", category:"beverages", subcategory:"Beverages",
+    veg:true, price:80, discountPrice:null, rating:4.8, reviewCount:130, bestseller:true, featured:false, available:true,
+    spicyLevel:null, servingSize:"1 glass", preparationTime:"5 min",
+    description:"Thick, creamy sweet lassi topped with a dollop of malai.",
+    detailedDescription:"A thick, chilled and generously sweetened yogurt lassi, served the traditional Punjabi way with a rich malai top.",
+    ingredients:["Yogurt","Sugar","Malai"],
+    tags:["sweet","traditional"],
+    images:[kkPlaceholder("🥛","#E0B23A","#B98A18")],
+    variants:[],
+    addons:[]
+  },
+  {
+    id:"masala-chach", name:"Masala Chach", slug:"masala-chach", category:"beverages", subcategory:"Beverages",
+    veg:true, price:60, discountPrice:null, rating:4.5, reviewCount:44, bestseller:false, featured:false, available:true,
+    spicyLevel:"Mild", servingSize:"1 glass", preparationTime:"5 min",
+    description:"Spiced buttermilk, refreshing and tangy.",
+    detailedDescription:"Chilled buttermilk churned with roasted cumin, mint and a pinch of black salt — cooling and digestive.",
+    ingredients:["Buttermilk","Cumin","Mint","Black Salt"],
+    tags:["refreshing","digestive"],
+    images:[kkPlaceholder("🥛","#8FBF6F","#4B7A52")],
+    variants:[],
+    addons:[]
+  },
+
+  {
+    id:"steamed-veg-momos", name:"Steamed Veg Momos", slug:"steamed-veg-momos", category:"momos", subcategory:"Momos",
+    veg:true, price:110, discountPrice:null, rating:4.6, reviewCount:88, bestseller:true, featured:true, available:true,
+    spicyLevel:"Mild", servingSize:"8 pcs", preparationTime:"15 min",
+    description:"Soft steamed dumplings packed with finely chopped vegetables.",
+    detailedDescription:"Delicate hand-folded momos steamed to order, filled with finely chopped cabbage, carrot and spring onion, served with our house spicy-tangy chutney.",
+    ingredients:["Refined Flour","Cabbage","Carrot","Spring Onion"],
+    tags:["steamed","light","street-style"],
+    images:[kkPlaceholder("🥟","#B5762E","#7E4F1B")],
+    variants:[], addons:[{ id:"a13", name:"Extra Chutney", price:10 }]
+  },
+  {
+    id:"pan-fried-chicken-momos", name:"Pan-Fried Chicken Momos", slug:"pan-fried-chicken-momos", category:"momos", subcategory:"Momos",
+    veg:false, price:140, discountPrice:120, rating:4.8, reviewCount:104, bestseller:true, featured:true, available:true,
+    spicyLevel:"Medium", servingSize:"8 pcs", preparationTime:"18 min",
+    description:"Juicy chicken momos, steamed then pan-seared to a crisp base.",
+    detailedDescription:"Steamed first for juiciness, then pan-seared on one side for a crisp golden base — the best of both textures, served piping hot with spicy chutney.",
+    ingredients:["Chicken Mince","Ginger-Garlic","Spring Onion","Refined Flour"],
+    tags:["bestseller","crispy","street-style"],
+    images:[kkPlaceholder("🥟","#9C5F2A","#6E4318")],
+    variants:[{ name:"Style", options:["Steamed","Pan-Fried"] }],
+    addons:[{ id:"a13", name:"Extra Chutney", price:10 }]
+  },
+  {
+    id:"steamed-rice", name:"Steamed Rice", slug:"steamed-rice", category:"rice-roti", subcategory:"Rice &amp; Roti",
+    veg:true, price:70, discountPrice:null, rating:4.4, reviewCount:52, bestseller:false, featured:false, available:true,
+    spicyLevel:null, servingSize:"Serves 1-2", preparationTime:"15 min",
+    description:"Fluffy steamed basmati rice, the perfect curry companion.",
+    detailedDescription:"Long-grain basmati, steamed fresh and fluffed to perfection — the everyday partner for any curry or dal.",
+    ingredients:["Basmati Rice"], tags:["staple"],
+    images:[kkPlaceholder("🍚","#D6B24A","#A6821C")], variants:[], addons:[]
+  },
+  {
+    id:"tandoori-roti", name:"Tandoori Roti", slug:"tandoori-roti", category:"rice-roti", subcategory:"Rice &amp; Roti",
+    veg:true, price:20, discountPrice:null, rating:4.6, reviewCount:97, bestseller:true, featured:false, available:true,
+    spicyLevel:null, servingSize:"1 piece", preparationTime:"8 min",
+    description:"Whole wheat roti, hand-rolled and cooked in the tandoor.",
+    detailedDescription:"Simple, honest whole wheat roti, rolled by hand and cooked fresh in the tandoor for that faint smoky char.",
+    ingredients:["Whole Wheat Flour"], tags:["staple","tandoor"],
+    images:[kkPlaceholder("🫓","#C9A23A","#9C7B1C")], variants:[], addons:[]
+  },
+  {
+    id:"butter-naan-standalone", name:"Butter Naan", slug:"butter-naan-standalone", category:"rice-roti", subcategory:"Rice &amp; Roti",
+    veg:true, price:35, discountPrice:null, rating:4.7, reviewCount:118, bestseller:true, featured:false, available:true,
+    spicyLevel:null, servingSize:"1 piece", preparationTime:"10 min",
+    description:"Soft leavened bread from the tandoor, brushed with butter.",
+    detailedDescription:"Pillowy-soft naan, stretched by hand and baked in a hot tandoor, finished with a generous brush of melted butter.",
+    ingredients:["Refined Flour","Yogurt","Butter"], tags:["tandoor","bestseller"],
+    images:[kkPlaceholder("🫓","#E0B23A","#B98A18")], variants:[], addons:[]
+  },
+  {
+    id:"gulab-jamun", name:"Gulab Jamun", slug:"gulab-jamun", category:"desserts", subcategory:"Desserts",
+    veg:true, price:80, discountPrice:null, rating:4.8, reviewCount:76, bestseller:true, featured:true, available:true,
+    spicyLevel:null, servingSize:"2 pcs", preparationTime:"5 min",
+    description:"Warm milk-solid dumplings soaked in rose-cardamom syrup.",
+    detailedDescription:"Soft khoya dumplings, deep-fried golden and soaked in a fragrant rose and cardamom sugar syrup — served warm.",
+    ingredients:["Khoya","Sugar Syrup","Cardamom","Rose Water"], tags:["sweet","festive","bestseller"],
+    images:[kkPlaceholder("🍮","#C97A9A","#8E4C67")], variants:[], addons:[]
+  },
+  {
+    id:"gajar-ka-halwa", name:"Gajar Ka Halwa", slug:"gajar-ka-halwa", category:"desserts", subcategory:"Desserts",
+    veg:true, price:100, discountPrice:null, rating:4.7, reviewCount:41, bestseller:false, featured:false, available:true,
+    spicyLevel:null, servingSize:"1 bowl", preparationTime:"5 min",
+    description:"Slow-cooked carrot halwa with milk, ghee and nuts.",
+    detailedDescription:"Fresh carrots grated and slow-cooked in milk and ghee until rich and fudgy, finished with a scatter of cashews and raisins.",
+    ingredients:["Carrot","Milk","Ghee","Cashew","Raisins"], tags:["sweet","winter-special"],
+    images:[kkPlaceholder("🥕","#B5762E","#8E4C67")], variants:[], addons:[]
+  },
+  {
+    id:"punjabi-thali-combo", name:"Punjabi Thali Combo", slug:"punjabi-thali-combo", category:"combos", subcategory:"Combos",
+    veg:true, price:299, discountPrice:249, rating:4.9, reviewCount:63, bestseller:true, featured:true, available:true,
+    spicyLevel:"Mild", servingSize:"1 thali", preparationTime:"25 min",
+    description:"Dal Makhni, Paneer curry, rice, roti, salad and a sweet.",
+    detailedDescription:"Our most complete meal — Dal Makhni, a seasonal paneer curry, steamed rice, two tandoori rotis, fresh salad and a small Gulab Jamun to finish. Everything a home thali should be.",
+    ingredients:["Dal Makhni","Paneer Curry","Rice","Roti","Salad","Gulab Jamun"], tags:["combo","bestseller","value"],
+    images:[kkPlaceholder("🍱","#4B7A52","#2F5D34")], variants:[], addons:[]
+  },
+  {
+    id:"chicken-curry-combo", name:"Chicken Curry Combo", slug:"chicken-curry-combo", category:"combos", subcategory:"Combos",
+    veg:false, price:320, discountPrice:279, rating:4.8, reviewCount:57, bestseller:true, featured:false, available:true,
+    spicyLevel:"Medium", servingSize:"1 combo", preparationTime:"28 min",
+    description:"Chicken Bhuna Masala with rice, roti and a cold drink.",
+    detailedDescription:"Our signature Chicken Bhuna Masala paired with steamed rice, a tandoori roti and a chilled soft drink — a complete, no-fuss meal.",
+    ingredients:["Chicken Bhuna Masala","Rice","Roti","Soft Drink"], tags:["combo","value"],
+    images:[kkPlaceholder("🍱","#E2900C","#9A3324")], variants:[], addons:[]
+  }
+];
+
+KK.offers = [
+  { id:"o1", title:"Today's Special", desc:"20% off on all Chicken Specials", badge:"Today Only", theme:"offer-1", code:"CHICKEN20" },
+  { id:"o2", title:"Combo Deals", desc:"Curry + Rice + Roti starting ₹249", badge:"Combo", theme:"offer-2", code:"COMBO249" },
+  { id:"o3", title:"First Order Offer", desc:"Flat ₹100 off on your first order", badge:"New Customer", theme:"offer-3", code:"WELCOME100" },
+  { id:"o4", title:"Free Delivery", desc:"On all orders above ₹500", badge:"Always On", theme:"offer-4", code:null },
+];
+
+KK.coupons = {
+  "WELCOME50":  { type:"flat", value:50, minOrder:200, desc:"₹50 off on orders above ₹200" },
+  "FIRSTORDER": { type:"flat", value:100, minOrder:300, desc:"₹100 off on your first order above ₹300" },
+  "SPECIAL20":  { type:"percent", value:20, maxDiscount:150, minOrder:250, desc:"20% off (up to ₹150) on orders above ₹250" },
+  "CHICKEN20":  { type:"percent", value:20, maxDiscount:120, minOrder:200, desc:"20% off (up to ₹120) on Chicken Specials" }
+};
+
+KK.reviews = [
+  { id:1, name:"Ritika Sharma", rating:5, text:"Tastes exactly like homemade food. The Butter Paneer Masala is unbelievably good — will order every week.", date:"2 weeks ago" },
+  { id:2, name:"Aman Yadav", rating:5, text:"Handi Mutton was outstanding, so tender and full of flavour. Packaging was neat and delivery was on time.", date:"1 month ago" },
+  { id:3, name:"Simran Kaur", rating:4, text:"Loved the Dal Makhni, very rich and authentic. Would love a bit more quantity for the price.", date:"3 weeks ago" },
+  { id:4, name:"Vikas Chauhan", rating:5, text:"Ordered the Chicken Bhuna Masala thrice this month already. Consistent taste every single time.", date:"5 days ago" },
+  { id:5, name:"Neha Gupta", rating:5, text:"The Cold Coffee with Ice Cream is a perfect summer treat. Kids loved the Cheese Maggi too.", date:"2 months ago" },
+  { id:6, name:"Rohit Malhotra", rating:5, text:"The Punjabi Thali Combo is unbeatable value — felt like a proper home-cooked meal, not a delivery order.", date:"4 days ago" },
+  { id:7, name:"Priya Verma", rating:4, text:"Pan-Fried Chicken Momos were crispy and fresh. Delivery was quick even during peak dinner hours.", date:"1 week ago" },
+];
+
+KK.config = {
+  brandName:"Kaur's Kitchen",
+  brandLocation:"Rewari",
+  tagline:"Ghar Ki Rasoi, Pyaar Ki Khushboo!",
+  phone:"+91 98765 43210",
+  whatsapp:"919876543210",
+  email:"hello@kaurskitchen.in",
+  address:"Model Town, Rewari, Haryana 123401",
+  hours:"11:00 AM – 11:00 PM, all days",
+  freeDeliveryThreshold:500,
+  deliveryFee:35,
+  taxRate:0.05
+};
+
+/* ---- helper lookups ---- */
+KK.getProductBySlug = slug => KK.products.find(p => p.slug === slug);
+KK.getProductsByCategory = cat => cat === "all" ? KK.products : KK.products.filter(p => p.category === cat);
+KK.getRelated = (product, limit=8) => KK.products
+  .filter(p => p.id !== product.id)
+  .sort((a,b) => {
+    const score = p => (p.category===product.category?2:0) + (p.tags.some(t=>product.tags.includes(t))?1:0);
+    return score(b) - score(a);
+  })
+  .slice(0, limit);
+KK.getBestsellers = () => KK.products.filter(p=>p.bestseller);
+KK.getFeatured = () => KK.products.filter(p=>p.featured);
+
+</script>
+
+<script>
+/* ============================================================
+   KAUR'S KITCHEN — FIRESTORE CATALOG SYNC
+   Keeps KK.products / KK.categories / KK.coupons / KK.offers /
+   KK.config live-updated from Firestore. The static arrays
+   defined in this file (data.js) act as the *seed* data — what
+   a fresh Firebase project gets populated with via the admin
+   portal's "Seed Database" button. Once Firestore has data,
+   these listeners take over.
+   ============================================================ */
+
+/* Keep a frozen copy of the built-in seed data before Firestore
+   listeners start overwriting KK.* — used by the admin portal's
+   "Seed Database" and "Reset a Section" actions. */
+const KK_SEED = {
+  products: JSON.parse(JSON.stringify(KK.products)),
+  categories: JSON.parse(JSON.stringify(KK.categories)),
+  coupons: JSON.parse(JSON.stringify(KK.coupons)),
+  offers: JSON.parse(JSON.stringify(KK.offers)),
+  config: JSON.parse(JSON.stringify(KK.config)),
+};
+
+const KKSync = (() => {
+  let onChange = () => {};
+  let unsubs = [];
+  const ready = { products:false, categories:false, coupons:false, offers:false, config:false };
+
+  function setOnChange(fn){ onChange = fn; }
+  function isReady(){ return Object.values(ready).every(Boolean); }
+
+  function start(){
+    unsubs.push(db.collection("products").onSnapshot(snap => {
+      if(!snap.empty){ KK.products = snap.docs.map(d => d.data()); }
+      ready.products = true;
+      onChange();
+    }, err => { console.error("products sync error:", err); ready.products = true; onChange(); }));
+
+    unsubs.push(db.collection("categories").onSnapshot(snap => {
+      if(!snap.empty){ KK.categories = snap.docs.map(d => d.data()); }
+      ready.categories = true;
+      onChange();
+    }, err => { console.error("categories sync error:", err); ready.categories = true; onChange(); }));
+
+    unsubs.push(db.collection("coupons").onSnapshot(snap => {
+      if(!snap.empty){
+        const obj = {};
+        snap.docs.forEach(d => obj[d.id] = d.data());
+        KK.coupons = obj;
+      }
+      ready.coupons = true;
+      onChange();
+    }, err => { console.error("coupons sync error:", err); ready.coupons = true; onChange(); }));
+
+    unsubs.push(db.collection("offers").onSnapshot(snap => {
+      if(!snap.empty){ KK.offers = snap.docs.map(d => d.data()); }
+      ready.offers = true;
+      onChange();
+    }, err => { console.error("offers sync error:", err); ready.offers = true; onChange(); }));
+
+    unsubs.push(db.collection("settings").doc("site").onSnapshot(doc => {
+      if(doc.exists){ KK.config = Object.assign({}, KK.config, doc.data()); }
+      ready.config = true;
+      onChange();
+    }, err => { console.error("settings sync error:", err); ready.config = true; onChange(); }));
+  }
+
+  function stop(){ unsubs.forEach(u=>u()); unsubs = []; }
+
+  /* ---- Admin write helpers (used by admin.html) ---- */
+  function saveProduct(product){ return db.collection("products").doc(product.slug).set(product); }
+  function deleteProduct(slug){ return db.collection("products").doc(slug).delete(); }
+  function saveCategory(cat){ return db.collection("categories").doc(cat.id).set(cat); }
+  function deleteCategory(id){ return db.collection("categories").doc(id).delete(); }
+  function saveCoupon(code, data){ return db.collection("coupons").doc(code).set(data); }
+  function deleteCoupon(code){ return db.collection("coupons").doc(code).delete(); }
+  function saveOffer(offer){ return db.collection("offers").doc(offer.id).set(offer); }
+  function deleteOffer(id){ return db.collection("offers").doc(id).delete(); }
+  function saveConfig(config){ return db.collection("settings").doc("site").set(config, { merge:true }); }
+
+  /* ---- Seed / reset: writes the built-in defaults into Firestore ---- */
+  function seedAll(){
+    const batch = db.batch();
+    KK_SEED.products.forEach(p => batch.set(db.collection("products").doc(p.slug), p));
+    KK_SEED.categories.forEach(c => batch.set(db.collection("categories").doc(c.id), c));
+    Object.entries(KK_SEED.coupons).forEach(([code,c]) => batch.set(db.collection("coupons").doc(code), c));
+    KK_SEED.offers.forEach(o => batch.set(db.collection("offers").doc(o.id), o));
+    batch.set(db.collection("settings").doc("site"), KK_SEED.config);
+    return batch.commit();
+  }
+
+  function resetSection(section){
+    const collMap = { products:"products", categories:"categories", coupons:"coupons", offers:"offers" };
+    if(section === "config"){ return db.collection("settings").doc("site").set(KK_SEED.config); }
+    const collName = collMap[section];
+    return db.collection(collName).get().then(snap => {
+      const batch = db.batch();
+      snap.docs.forEach(d => batch.delete(d.ref));
+      if(section === "products") KK_SEED.products.forEach(p => batch.set(db.collection("products").doc(p.slug), p));
+      if(section === "categories") KK_SEED.categories.forEach(c => batch.set(db.collection("categories").doc(c.id), c));
+      if(section === "coupons") Object.entries(KK_SEED.coupons).forEach(([code,c]) => batch.set(db.collection("coupons").doc(code), c));
+      if(section === "offers") KK_SEED.offers.forEach(o => batch.set(db.collection("offers").doc(o.id), o));
+      return batch.commit();
+    });
+  }
+
+  return {
+    start, stop, isReady, setOnChange,
+    saveProduct, deleteProduct, saveCategory, deleteCategory,
+    saveCoupon, deleteCoupon, saveOffer, deleteOffer, saveConfig,
+    seedAll, resetSection
+  };
+})();
+
+</script>
+
+<script>
+/* ============================================================
+   KAUR'S KITCHEN — ADMIN PORTAL APP (Firebase Edition)
+   Reads catalog data from KK.* (kept live via firestore-sync.js)
+   and writes changes straight to Firestore via KKSync.* helpers,
+   so edits show up on the storefront (and any other admin
+   session) in real time. Admin login uses Firebase Auth, gated
+   by membership in the Firestore "admins" collection.
+   ============================================================ */
+
+const ADMIN_STOREFRONT_KEY = "kk_admin_storefront_url";
+
+const ICON = {
+  dashboard:`<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>`,
+  box:`<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8l-9-5-9 5 9 5 9-5z"/><path d="M3 8v8l9 5 9-5V8"/><path d="M12 13v8"/></svg>`,
+  tag:`<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.6 12l-8.4 8.4a2 2 0 0 1-2.8 0L3 14V4h10l7.6 8z"/><circle cx="7.5" cy="7.5" r="1.2"/></svg>`,
+  ticket:`<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8a2 2 0 0 0 2-2h14a2 2 0 0 0 2 2v2a2 2 0 0 0 0 4v2a2 2 0 0 0-2 2H5a2 2 0 0 0-2-2v-2a2 2 0 0 0 0-4V8z"/></svg>`,
+  megaphone:`<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11v2a2 2 0 0 0 2 2h1l3 5V6l-3 5H5a2 2 0 0 0-2 2z"/><path d="M13 8a4 4 0 0 1 0 8"/><path d="M17 5a9 9 0 0 1 0 14"/></svg>`,
+  receipt:`<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2h12v20l-3-2-3 2-3-2-3 2V2z"/><path d="M9 8h6M9 12h6"/></svg>`,
+  settings:`<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06A2 2 0 1 1 7.04 4.3l.06.06A1.65 1.65 0 0 0 8.92 4.7a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>`,
+  database:`<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.66 3.58 3 8 3s8-1.34 8-3V5"/><path d="M4 12c0 1.66 3.58 3 8 3s8-1.34 8-3"/></svg>`,
+  logout:`<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>`,
+  external:`<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14L21 3"/></svg>`,
+  plus:`<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>`,
+  edit:`<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg>`,
+  trash:`<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>`,
+  close:`<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>`,
+  search:`<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>`,
+};
+
+function slugify(str){
+  return String(str||"").toLowerCase().trim().replace(/[^a-z0-9]+/g,"-").replace(/(^-+|-+$)/g,"") || "item";
+}
+function uniqueSlug(base, excludeSlug){
+  let s = slugify(base), i = 1;
+  while(KK.products.some(p => p.slug === s && p.slug !== excludeSlug)){ s = slugify(base) + "-" + (++i); }
+  return s;
+}
+function csvToArr(str){ return String(str||"").split(",").map(s=>s.trim()).filter(Boolean); }
+
+function toast(msg, type=""){
+  const stack = document.getElementById("toastStack");
+  if(!stack) return;
+  const el = document.createElement("div");
+  el.className = "toast " + type;
+  el.textContent = msg;
+  stack.appendChild(el);
+  setTimeout(()=>el.remove(), 2800);
+}
+function friendlyAuthError(err){
+  const map = {
+    "auth/invalid-email": "That doesn't look like a valid email address.",
+    "auth/user-not-found": "No account found with that email.",
+    "auth/wrong-password": "Incorrect password.",
+    "auth/invalid-credential": "Incorrect email or password.",
+    "auth/too-many-requests": "Too many attempts. Please wait a moment and try again.",
+    "auth/network-request-failed": "Network error — check your connection.",
+    "auth/requires-recent-login": "Please log out and log back in, then try again."
+  };
+  return (err && map[err.code]) || (err && err.message) || "Something went wrong.";
+}
+
+/* ================================================================
+   AUTH GATE — Firebase Auth + "admins" collection membership check
+   ================================================================ */
+let adminUser = null; // { uid, email }
+
+function renderLogin(errorMsg){
+  document.getElementById("app").innerHTML = `
+    <div class="login-gate">
+      <div class="login-card">
+        <div class="login-brand">
+          <span class="mark">KK</span>
+          <div><b>Kaur's Kitchen</b><span>ADMIN PORTAL</span></div>
+        </div>
+        <form id="loginForm">
+          <div class="field"><label for="loginEmail">Admin Email</label><input id="loginEmail" type="email" required autofocus></div>
+          <div class="field"><label for="loginPw">Password</label><input id="loginPw" type="password" required></div>
+          <button class="btn btn-primary" style="width:100%" type="submit" id="loginSubmitBtn">Login</button>
+        </form>
+        ${errorMsg ? `<div class="login-note" style="background:var(--maroon-tint);color:var(--maroon-deep);">${errorMsg}</div>` : ""}
+        <div class="login-note">
+          First time setting up? Create your admin account in the Firebase Console (Authentication → Add user),
+          then add a document to the <b>admins</b> collection in Firestore with that user's UID as the document ID.
+          See the setup guide for exact steps.
+        </div>
+      </div>
+    </div>`;
+  document.getElementById("loginForm").addEventListener("submit", e=>{
+    e.preventDefault();
+    const btn = document.getElementById("loginSubmitBtn");
+    btn.disabled = true; btn.textContent = "Logging in…";
+    const email = document.getElementById("loginEmail").value;
+    const pw = document.getElementById("loginPw").value;
+    auth.signInWithEmailAndPassword(email, pw).catch(err=>{
+      renderLogin(friendlyAuthError(err));
+    });
+    // renderShell() is triggered by onAuthStateChanged once admin membership is confirmed.
+  });
+}
+
+function checkAdminAndProceed(user){
+  db.collection("admins").doc(user.uid).get().then(doc=>{
+    if(doc.exists){
+      adminUser = { uid:user.uid, email:user.email };
+      renderShell();
+    } else {
+      auth.signOut();
+      renderLogin(`Signed in as ${user.email}, but this account isn't authorized as an admin. Add its UID to the "admins" collection in Firestore, or sign in with a different account.`);
+    }
+  }).catch(err=>{
+    renderLogin("Couldn't verify admin access: " + friendlyAuthError(err));
+  });
+}
+
+auth.onAuthStateChanged(user => {
+  if(user) checkAdminAndProceed(user);
+  else { adminUser = null; renderLogin(); }
+});
+
+/* ================================================================
+   SHELL (sidebar + topbar + content)
+   ================================================================ */
+const NAV_ITEMS = [
+  ["dashboard","Dashboard","dashboard"],
+  ["products","Products","box"],
+  ["categories","Categories","tag"],
+  ["coupons","Coupons","ticket"],
+  ["offers","Offers","megaphone"],
+  ["orders","Orders","receipt"],
+  ["settings","Site Settings","settings"],
+  ["data","Data & Backup","database"],
+];
+
+let state = { section: "dashboard", productSearch:"", productCatFilter:"all" };
+let adminOrders = [];
+let adminOrdersUnsub = null;
+
+function startAdminOrdersListener(){
+  if(adminOrdersUnsub) adminOrdersUnsub();
+  adminOrdersUnsub = db.collection("orders").onSnapshot(snap=>{
+    adminOrders = snap.docs.map(d=>Object.assign({ id:d.id }, d.data()))
+      .sort((a,b)=> (b.date||"").localeCompare(a.date||""));
+    if(state.section === "dashboard" || state.section === "orders") renderContentIfShellReady();
+  }, err=>console.error("Admin orders listener error:", err));
+}
+
+function renderShell(){
+  document.getElementById("app").innerHTML = `
+    <div class="toast-stack" id="toastStack"></div>
+    <div class="admin-shell">
+      <div class="sidebar-overlay" id="sidebarOverlay"></div>
+      <aside class="sidebar" id="sidebar">
+        <div class="sidebar-brand">
+          <span class="mark">KK</span>
+          <div><b>Kaur's Kitchen</b><span>ADMIN PORTAL</span></div>
+        </div>
+        <nav class="sidebar-nav" id="sidebarNav">
+          ${NAV_ITEMS.map(([key,label,icon])=>`<a href="#" data-nav="${key}">${ICON[icon]}${label}</a>`).join("")}
+        </nav>
+        <div class="sidebar-foot">
+          <div style="padding:8px 10px 4px;font-size:11.5px;color:rgba(251,243,230,.55);">${adminUser ? adminUser.email : ""}</div>
+          <a href="index.html" target="_blank" id="viewSiteLink">${ICON.external} Open Storefront</a>
+          <a href="#" id="logoutLink">${ICON.logout} Logout</a>
+        </div>
+      </aside>
+      <div class="main-area">
+        <header class="topbar">
+          <div class="flex items-center gap-12">
+            <button class="hamburger icon-btn" id="hamburgerBtn" aria-label="Menu">☰</button>
+            <h1 id="topbarTitle">Dashboard</h1>
+          </div>
+          <div class="topbar-actions">
+            <a href="index.html" target="_blank" class="btn btn-outline btn-sm">${ICON.external} View Site</a>
+          </div>
+        </header>
+        <div class="content" id="contentArea"></div>
+      </div>
+    </div>`;
+
+  const storefrontUrl = localStorage.getItem(ADMIN_STOREFRONT_KEY) || "index.html";
+  document.querySelectorAll("#viewSiteLink, .topbar-actions a").forEach(a=>a.href = storefrontUrl);
+
+  document.getElementById("sidebarNav").addEventListener("click", e=>{
+    const a = e.target.closest("[data-nav]"); if(!a) return;
+    e.preventDefault();
+    state.section = a.dataset.nav;
+    document.getElementById("sidebar").classList.remove("open");
+    document.getElementById("sidebarOverlay").classList.remove("open");
+    renderContent();
+  });
+  document.getElementById("logoutLink").addEventListener("click", e=>{
+    e.preventDefault();
+    if(adminOrdersUnsub){ adminOrdersUnsub(); adminOrdersUnsub = null; }
+    auth.signOut();
+  });
+  document.getElementById("hamburgerBtn").addEventListener("click", ()=>{
+    document.getElementById("sidebar").classList.toggle("open");
+    document.getElementById("sidebarOverlay").classList.toggle("open");
+  });
+  document.getElementById("sidebarOverlay").addEventListener("click", ()=>{
+    document.getElementById("sidebar").classList.remove("open");
+    document.getElementById("sidebarOverlay").classList.remove("open");
+  });
+
+  startAdminOrdersListener();
+
+  /* Live-refresh the current table when catalog data changes elsewhere —
+     but never while a form drawer is open, so we don't blow away in-progress edits. */
+  KKSync.setOnChange(()=>{
+    if(document.querySelector(".form-drawer.open")) return;
+    renderContentIfShellReady();
+  });
+
+  renderContent();
+}
+
+function renderContentIfShellReady(){
+  if(document.getElementById("contentArea")) renderContent();
+}
+
+function renderContent(){
+  document.querySelectorAll("[data-nav]").forEach(a=>a.classList.toggle("active", a.dataset.nav===state.section));
+  const titles = { dashboard:"Dashboard", products:"Products", categories:"Categories", coupons:"Coupons", offers:"Offers", orders:"Orders", settings:"Site Settings", data:"Data & Backup" };
+  document.getElementById("topbarTitle").textContent = titles[state.section];
+  const c = document.getElementById("contentArea");
+  ({
+    dashboard: renderDashboard, products: renderProducts, categories: renderCategories,
+    coupons: renderCoupons, offers: renderOffers, orders: renderOrders,
+    settings: renderSettings, data: renderData,
+  })[state.section](c);
+}
+
+/* ================================================================
+   DASHBOARD
+   ================================================================ */
+function renderDashboard(c){
+  const revenue = adminOrders.reduce((s,o)=>s+(o.total||0),0);
+  const pending = adminOrders.filter(o=>o.status && o.status!=="Delivered" && o.status!=="Cancelled").length;
+  c.innerHTML = `
+    <div class="stat-grid">
+      <div class="stat-card"><div class="icn" style="background:var(--marigold-tint);color:var(--marigold-deep)">${ICON.box}</div><b>${KK.products.length}</b><span>Total Products</span></div>
+      <div class="stat-card"><div class="icn" style="background:var(--sage-tint);color:#2F5D34">${ICON.receipt}</div><b>${adminOrders.length}</b><span>Total Orders</span></div>
+      <div class="stat-card"><div class="icn" style="background:var(--maroon-tint);color:var(--maroon-deep)">${ICON.megaphone}</div><b>${pending}</b><span>Orders In Progress</span></div>
+      <div class="stat-card"><div class="icn" style="background:var(--marigold-tint);color:var(--marigold-deep)">₹</div><b>₹${revenue}</b><span>Total Revenue</span></div>
+    </div>
+    <div class="card mb-16">
+      <h3 class="section-title">Recent Orders</h3>
+      ${adminOrders.length ? `
+        <div class="table-wrap" style="box-shadow:none;">
+          <table><thead><tr><th>Order ID</th><th>Date</th><th>Customer</th><th>Total</th><th>Status</th></tr></thead>
+          <tbody>${adminOrders.slice(0,6).map(o=>`
+            <tr><td class="cell-name">#${o.id.slice(0,8)}</td><td>${o.date?new Date(o.date).toLocaleDateString('en-IN',{day:'numeric',month:'short'}):'—'}</td>
+            <td>${o.address?o.address.name:(o.userEmail||'—')}</td><td>₹${o.total}</td>
+            <td><span class="badge ${o.status==='Delivered'?'badge-sage':o.status==='Cancelled'?'badge-maroon':'badge-marigold'}">${o.status}</span></td></tr>`).join("")}</tbody></table>
+        </div>` : `<div class="empty-block"><div class="icn">🧾</div><p>No orders placed yet.</p></div>`}
+    </div>
+    <div class="card">
+      <h3 class="section-title">Connected to Firebase</h3>
+      <p class="text-muted" style="font-size:13px;line-height:1.7;">
+        This admin portal and the storefront both read and write the same Firestore database, so changes here
+        appear for every customer in real time — no need for them to be on the same device or browser.
+        If a section looks empty, use <b>Data &amp; Backup → Seed Database</b> to load the built-in starter catalog.
+      </p>
+    </div>`;
+}
+
+/* ================================================================
+   PRODUCTS
+   ================================================================ */
+function renderProducts(c){
+  const catOptions = ['<option value="all">All Categories</option>'].concat(
+    KK.categories.map(cat=>`<option value="${cat.id}">${cat.name}</option>`)
+  ).join("");
+
+  c.innerHTML = `
+    <div class="toolbar">
+      <div class="toolbar-left">
+        <div class="search-box">${ICON.search}<input type="search" id="prodSearch" placeholder="Search products…" value="${state.productSearch}"></div>
+        <select class="select-mini" id="prodCatFilter">${catOptions}</select>
+      </div>
+      <button class="btn btn-primary" id="addProductBtn">${ICON.plus} Add Product</button>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th></th><th>Name</th><th>Category</th><th>Price</th><th>Status</th><th>Flags</th><th></th></tr></thead>
+        <tbody id="productsTbody"></tbody>
+      </table>
+    </div>
+    <div class="drawer-overlay" id="formOverlay"></div>
+    <aside class="form-drawer" id="productDrawer"></aside>`;
+
+  document.getElementById("prodCatFilter").value = state.productCatFilter;
+  renderProductsTable();
+
+  document.getElementById("prodSearch").addEventListener("input", e=>{ state.productSearch = e.target.value; renderProductsTable(); });
+  document.getElementById("prodCatFilter").addEventListener("change", e=>{ state.productCatFilter = e.target.value; renderProductsTable(); });
+  document.getElementById("addProductBtn").addEventListener("click", ()=>openProductDrawer(null));
+  document.getElementById("formOverlay").addEventListener("click", closeDrawer);
+}
+
+function renderProductsTable(){
+  const tbody = document.getElementById("productsTbody");
+  if(!tbody) return;
+  let list = KK.products;
+  if(state.productCatFilter !== "all") list = list.filter(p=>p.category===state.productCatFilter);
+  if(state.productSearch.trim()){
+    const q = state.productSearch.trim().toLowerCase();
+    list = list.filter(p=>p.name.toLowerCase().includes(q) || (p.tags||[]).some(t=>t.includes(q)));
+  }
+  if(!list.length){ tbody.innerHTML = `<tr class="empty-row"><td colspan="7">No products match. Try Data &amp; Backup → Seed Database if the catalog is empty.</td></tr>`; return; }
+
+  tbody.innerHTML = list.map(p=>{
+    try{ return `
+    <tr data-row="${p.slug}">
+      <td><img class="row-thumb" src="${(p.images && p.images[0]) || kkPlaceholder('🍽️','#E2900C','#B96F00')}" alt=""></td>
+      <td><div class="cell-name">${p.name}</div><div class="cell-sub">${p.veg?'Veg':'Non-Veg'} · ${p.subcategory}</div></td>
+      <td>${(KK.categories.find(c=>c.id===p.category)||{}).name || p.category}</td>
+      <td>₹${p.discountPrice||p.price}${p.discountPrice?` <span class="text-faint" style="text-decoration:line-through;font-size:11.5px;">₹${p.price}</span>`:''}</td>
+      <td><label class="switch"><input type="checkbox" data-toggle-available="${p.slug}" ${p.available?'checked':''}><span class="track"></span></label></td>
+      <td>
+        ${p.bestseller?'<span class="badge badge-marigold">Bestseller</span> ':''}
+        ${p.featured?'<span class="badge badge-sage">Featured</span>':''}
+        ${!p.bestseller && !p.featured ? '<span class="badge badge-gray">—</span>' : ''}
+      </td>
+      <td><div class="table-actions">
+        <button class="icon-btn" data-edit="${p.slug}" aria-label="Edit">${ICON.edit}</button>
+        <button class="icon-btn" data-del="${p.slug}" aria-label="Delete">${ICON.trash}</button>
+      </div></td>
+    </tr>`;
+    }catch(err){
+      console.error("Skipped broken product row:", p && p.slug, err);
+      return `<tr><td colspan="7" class="text-faint">⚠️ "${(p&&p.name)||p.slug||'Unknown product'}" has corrupted data and couldn't be displayed. Edit or delete it from Firestore.</td></tr>`;
+    }
+  }).join("");
+
+  tbody.querySelectorAll("[data-edit]").forEach(b=>b.addEventListener("click", ()=>openProductDrawer(KK.products.find(p=>p.slug===b.dataset.edit))));
+  tbody.querySelectorAll("[data-del]").forEach(b=>b.addEventListener("click", ()=>{
+    const p = KK.products.find(x=>x.slug===b.dataset.del);
+    if(confirm(`Delete "${p.name}"? This can't be undone.`)){
+      KKSync.deleteProduct(p.slug).then(()=>toast("Product deleted.", "success")).catch(err=>toast("Delete failed: "+err.message, "error"));
+    }
+  }));
+  tbody.querySelectorAll("[data-toggle-available]").forEach(cb=>cb.addEventListener("change", ()=>{
+    const p = KK.products.find(x=>x.slug===cb.dataset.toggleAvailable);
+    if(!p){ cb.checked = !cb.checked; toast("Couldn't find that product — try refreshing.", "error"); return; }
+    const updated = Object.assign({}, p, { available: cb.checked });
+    KKSync.saveProduct(updated).then(()=>toast(updated.available ? `${p.name} marked available.` : `${p.name} marked unavailable.`))
+      .catch(err=>{ cb.checked = !cb.checked; toast("Update failed: "+err.message, "error"); });
+  }));
+}
+
+function openProductDrawer(product){
+  const isEdit = !!product;
+  const p = product || {
+    slug:null, name:"", category:(KK.categories[0]||{}).id||"", subcategory:"", veg:true,
+    price:100, discountPrice:null, rating:4.5, reviewCount:0, bestseller:false, featured:false, available:true,
+    spicyLevel:"", servingSize:"", preparationTime:"", description:"", detailedDescription:"",
+    ingredients:[], tags:[], images:[], variants:[], addons:[]
+  };
+  const variantGroup = p.variants[0] || { name:"", options:[] };
+
+  const drawer = document.getElementById("productDrawer");
+  drawer.innerHTML = `
+    <div class="form-drawer-head">
+      <h3 class="section-title" style="margin:0">${isEdit?'Edit Product':'Add Product'}</h3>
+      <button class="icon-btn" id="closeProductDrawer">${ICON.close}</button>
+    </div>
+    <div class="form-drawer-body">
+      <form id="productForm">
+        <div class="form-section-label">Basics</div>
+        <div class="field"><label>Name</label><input name="name" required value="${escAttr(p.name)}"></div>
+        <div class="field"><label>Slug (used as the product's unique ID)</label><input name="slug" value="${escAttr(p.slug||'')}" ${isEdit?'readonly style="opacity:.6;"':''}><div class="field-hint">${isEdit ? "Slug can't be changed after creation." : "Leave blank to auto-generate from name."}</div></div>
+        <div class="field-row">
+          <div class="field"><label>Category</label>
+            <select name="category">${KK.categories.map(c=>`<option value="${c.id}" ${c.id===p.category?'selected':''}>${c.name}</option>`).join("")}</select>
+          </div>
+          <div class="field"><label>Subcategory Label</label><input name="subcategory" value="${escAttr(p.subcategory)}" placeholder="e.g. Chicken Specials"></div>
+        </div>
+        <div class="checkbox-grid">
+          <label class="checkbox-row"><input type="checkbox" name="veg" ${p.veg?'checked':''}> Vegetarian</label>
+          <label class="checkbox-row"><input type="checkbox" name="available" ${p.available?'checked':''}> Available</label>
+          <label class="checkbox-row"><input type="checkbox" name="bestseller" ${p.bestseller?'checked':''}> Bestseller</label>
+          <label class="checkbox-row"><input type="checkbox" name="featured" ${p.featured?'checked':''}> Featured</label>
+        </div>
+
+        <div class="form-section-label">Pricing &amp; Rating</div>
+        <div class="field-row">
+          <div class="field"><label>Price (₹)</label><input type="number" name="price" min="0" step="1" required value="${p.price}"></div>
+          <div class="field"><label>Discount Price (₹, optional)</label><input type="number" name="discountPrice" min="0" step="1" value="${p.discountPrice ?? ''}"></div>
+        </div>
+        <div class="field-row">
+          <div class="field"><label>Rating (0-5)</label><input type="number" name="rating" min="0" max="5" step="0.1" value="${p.rating}"></div>
+          <div class="field"><label>Review Count</label><input type="number" name="reviewCount" min="0" step="1" value="${p.reviewCount}"></div>
+        </div>
+
+        <div class="form-section-label">Details</div>
+        <div class="field-row">
+          <div class="field"><label>Spice Level</label>
+            <select name="spicyLevel"><option value="">None</option>${["Mild","Medium","Spicy","Extra Spicy"].map(s=>`<option value="${s}" ${p.spicyLevel===s?'selected':''}>${s}</option>`).join("")}</select>
+          </div>
+          <div class="field"><label>Serving Size</label><input name="servingSize" value="${escAttr(p.servingSize)}" placeholder="e.g. Serves 2"></div>
+        </div>
+        <div class="field"><label>Preparation Time</label><input name="preparationTime" value="${escAttr(p.preparationTime)}" placeholder="e.g. 25-30 min"></div>
+        <div class="field"><label>Short Description</label><input name="description" value="${escAttr(p.description)}"></div>
+        <div class="field"><label>Detailed Description</label><textarea name="detailedDescription" rows="3">${p.detailedDescription||""}</textarea></div>
+        <div class="field"><label>Ingredients (comma separated)</label><input name="ingredients" value="${escAttr(p.ingredients.join(", "))}"></div>
+        <div class="field"><label>Tags (comma separated)</label><input name="tags" value="${escAttr(p.tags.join(", "))}"></div>
+
+        <div class="form-section-label">Images</div>
+        <div class="placeholder-gen">
+          <div class="field"><label>Emoji</label><input id="genEmoji" value="🍽️" style="text-align:center;font-size:16px;"></div>
+          <div class="field"><label>Color 1</label><input id="genColor1" type="color" value="#E2900C"></div>
+          <div class="field"><label>Color 2</label><input id="genColor2" type="color" value="#B96F00"></div>
+          <button type="button" class="btn btn-outline btn-sm" id="genImgBtn">Generate</button>
+        </div>
+        <div class="field"><label>Image URLs (one per line — first is the main image)</label><textarea name="images" id="imagesField" rows="3">${p.images.join("\n")}</textarea></div>
+        <div class="img-preview-row" id="imgPreviewRow"></div>
+
+        <div class="form-section-label">Variant Group (optional — e.g. Spice Level)</div>
+        <div class="field-row">
+          <div class="field"><label>Group Name</label><input name="variantName" value="${escAttr(variantGroup.name)}" placeholder="e.g. Spice Level"></div>
+          <div class="field"><label>Options (comma separated)</label><input name="variantOptions" value="${escAttr(variantGroup.options.join(", "))}" placeholder="Mild, Medium, Spicy"></div>
+        </div>
+
+        <div class="form-section-label">Add-ons (optional)</div>
+        <div id="addonRows"></div>
+        <button type="button" class="btn btn-outline btn-sm" id="addAddonRowBtn">${ICON.plus} Add-on</button>
+      </form>
+    </div>
+    <div class="form-drawer-foot">
+      <button class="btn btn-outline" id="cancelProductBtn">Cancel</button>
+      <button class="btn btn-primary" id="saveProductBtn">Save Product</button>
+    </div>`;
+
+  const addonRows = document.getElementById("addonRows");
+  function addAddonRow(addon){
+    const row = document.createElement("div");
+    row.className = "repeat-row";
+    row.innerHTML = `<input placeholder="Add-on name" class="addon-name" value="${escAttr((addon&&addon.name)||'')}">
+      <input placeholder="₹ price" type="number" min="0" class="addon-price" style="max-width:90px" value="${addon ? addon.price : ''}">
+      <button type="button" class="icon-btn remove-addon" aria-label="Remove">${ICON.close}</button>`;
+    row.querySelector(".remove-addon").addEventListener("click", ()=>row.remove());
+    addonRows.appendChild(row);
+  }
+  (p.addons||[]).forEach(addAddonRow);
+  document.getElementById("addAddonRowBtn").addEventListener("click", ()=>addAddonRow(null));
+
+  function refreshImgPreview(){
+    const urls = document.getElementById("imagesField").value.split("\n").map(s=>s.trim()).filter(Boolean);
+    document.getElementById("imgPreviewRow").innerHTML = urls.map(u=>`<img src="${u}" alt="">`).join("");
+  }
+  document.getElementById("imagesField").addEventListener("input", refreshImgPreview);
+  refreshImgPreview();
+
+  document.getElementById("genImgBtn").addEventListener("click", ()=>{
+    const emoji = document.getElementById("genEmoji").value || "🍽️";
+    const c1 = document.getElementById("genColor1").value;
+    const c2 = document.getElementById("genColor2").value;
+    const dataUri = kkPlaceholder(emoji, c1, c2);
+    const field = document.getElementById("imagesField");
+    field.value = field.value.trim() ? field.value.trim() + "\n" + dataUri : dataUri;
+    refreshImgPreview();
+  });
+
+  document.getElementById("closeProductDrawer").addEventListener("click", closeDrawer);
+  document.getElementById("cancelProductBtn").addEventListener("click", closeDrawer);
+
+  document.getElementById("saveProductBtn").addEventListener("click", ()=>{
+    const form = document.getElementById("productForm");
+    if(!form.reportValidity()) return;
+    const fd = new FormData(form);
+    const name = fd.get("name").trim();
+    if(!name){ toast("Name is required.", "error"); return; }
+
+    const images = fd.get("images").split("\n").map(s=>s.trim()).filter(Boolean);
+    if(!images.length){ images.push(kkPlaceholder("🍽️","#E2900C","#B96F00")); }
+
+    const variantName = fd.get("variantName").trim();
+    const variants = variantName ? [{ name:variantName, options: csvToArr(fd.get("variantOptions")) }] : [];
+
+    const addons = Array.from(addonRows.querySelectorAll(".repeat-row")).map((row,i)=>{
+      const n = row.querySelector(".addon-name").value.trim();
+      const pr = Number(row.querySelector(".addon-price").value);
+      if(!n) return null;
+      return { id: (p.addons && p.addons[i] && p.addons[i].id) || ("a" + Date.now() + i), name:n, price: isNaN(pr)?0:pr };
+    }).filter(Boolean);
+
+    const slug = isEdit ? p.slug : uniqueSlug(fd.get("slug").trim() || name, null);
+    const record = {
+      slug, id: slug, name,
+      category: fd.get("category"),
+      subcategory: fd.get("subcategory").trim() || ((KK.categories.find(c=>c.id===fd.get("category"))||{}).name || ""),
+      veg: fd.get("veg") === "on",
+      price: Number(fd.get("price")) || 0,
+      discountPrice: fd.get("discountPrice") ? Number(fd.get("discountPrice")) : null,
+      rating: Number(fd.get("rating")) || 0,
+      reviewCount: Number(fd.get("reviewCount")) || 0,
+      bestseller: fd.get("bestseller") === "on",
+      featured: fd.get("featured") === "on",
+      available: fd.get("available") === "on",
+      spicyLevel: fd.get("spicyLevel") || null,
+      servingSize: fd.get("servingSize").trim(),
+      preparationTime: fd.get("preparationTime").trim(),
+      description: fd.get("description").trim(),
+      detailedDescription: fd.get("detailedDescription").trim(),
+      ingredients: csvToArr(fd.get("ingredients")),
+      tags: csvToArr(fd.get("tags")),
+      images, variants, addons
+    };
+
+    const saveBtn = document.getElementById("saveProductBtn");
+    saveBtn.disabled = true; saveBtn.textContent = "Saving…";
+    KKSync.saveProduct(record).then(()=>{
+      closeDrawer();
+      toast(isEdit ? "Product updated." : "Product added.", "success");
+    }).catch(err=>{
+      toast("Save failed: " + err.message, "error");
+      saveBtn.disabled = false; saveBtn.textContent = "Save Product";
+    });
+  });
+
+  openDrawer();
+}
+
+/* ================================================================
+   CATEGORIES
+   ================================================================ */
+function renderCategories(c){
+  c.innerHTML = `
+    <div class="toolbar"><div></div><button class="btn btn-primary" id="addCatBtn">${ICON.plus} Add Category</button></div>
+    <div class="table-wrap"><table>
+      <thead><tr><th></th><th>Name</th><th>ID</th><th>Colors</th><th></th></tr></thead>
+      <tbody id="catsTbody"></tbody>
+    </table></div>
+    <div class="drawer-overlay" id="formOverlay"></div>
+    <aside class="form-drawer" id="catDrawer"></aside>`;
+  renderCatsTable();
+  document.getElementById("addCatBtn").addEventListener("click", ()=>openCategoryDrawer(null));
+  document.getElementById("formOverlay").addEventListener("click", closeDrawer);
+}
+function renderCatsTable(){
+  const tbody = document.getElementById("catsTbody");
+  if(!KK.categories.length){ tbody.innerHTML = `<tr class="empty-row"><td colspan="5">No categories yet. Try Seed Database.</td></tr>`; return; }
+  tbody.innerHTML = KK.categories.map(cat=>`
+    <tr>
+      <td style="font-size:22px">${cat.icon}</td>
+      <td class="cell-name">${cat.name}</td>
+      <td class="text-faint">${cat.id}</td>
+      <td><span class="color-swatch" style="background:${cat.color[0]}"></span> <span class="color-swatch" style="background:${cat.color[1]}"></span></td>
+      <td><div class="table-actions">
+        <button class="icon-btn" data-edit-cat="${cat.id}">${ICON.edit}</button>
+        <button class="icon-btn" data-del-cat="${cat.id}">${ICON.trash}</button>
+      </div></td>
+    </tr>`).join("");
+  tbody.querySelectorAll("[data-edit-cat]").forEach(b=>b.addEventListener("click", ()=>openCategoryDrawer(KK.categories.find(x=>x.id===b.dataset.editCat))));
+  tbody.querySelectorAll("[data-del-cat]").forEach(b=>b.addEventListener("click", ()=>{
+    const cat = KK.categories.find(x=>x.id===b.dataset.delCat);
+    const inUse = KK.products.some(p=>p.category===cat.id);
+    if(inUse && !confirm(`"${cat.name}" is used by ${KK.products.filter(p=>p.category===cat.id).length} product(s). Delete anyway?`)) return;
+    if(!inUse && !confirm(`Delete category "${cat.name}"?`)) return;
+    KKSync.deleteCategory(cat.id).then(()=>toast("Category deleted.", "success")).catch(err=>toast("Delete failed: "+err.message, "error"));
+  }));
+}
+function openCategoryDrawer(cat){
+  const isEdit = !!cat;
+  const c = cat || { id:"", name:"", icon:"🍽️", color:["#E2900C","#B96F00"] };
+  const drawer = document.getElementById("catDrawer");
+  drawer.innerHTML = `
+    <div class="form-drawer-head"><h3 class="section-title" style="margin:0">${isEdit?'Edit':'Add'} Category</h3><button class="icon-btn" id="closeCatDrawer">${ICON.close}</button></div>
+    <div class="form-drawer-body">
+      <form id="catForm">
+        <div class="field"><label>Name</label><input name="name" required value="${escAttr(c.name)}"></div>
+        <div class="field"><label>ID</label><input name="id" value="${escAttr(c.id)}" ${isEdit?'readonly style="opacity:.6;"':''}><div class="field-hint">${isEdit? "ID can't be changed after creation." : "Leave blank to auto-generate from name."}</div></div>
+        <div class="field"><label>Icon (emoji)</label><input name="icon" value="${escAttr(c.icon)}" style="max-width:100px;text-align:center;font-size:18px;"></div>
+        <div class="field-row">
+          <div class="field"><label>Color 1</label><input name="color1" type="color" value="${c.color[0]}"></div>
+          <div class="field"><label>Color 2</label><input name="color2" type="color" value="${c.color[1]}"></div>
+        </div>
+      </form>
+    </div>
+    <div class="form-drawer-foot"><button class="btn btn-outline" id="cancelCatBtn">Cancel</button><button class="btn btn-primary" id="saveCatBtn">Save Category</button></div>`;
+  document.getElementById("closeCatDrawer").addEventListener("click", closeDrawer);
+  document.getElementById("cancelCatBtn").addEventListener("click", closeDrawer);
+  document.getElementById("saveCatBtn").addEventListener("click", ()=>{
+    const form = document.getElementById("catForm");
+    if(!form.reportValidity()) return;
+    const fd = new FormData(form);
+    const name = fd.get("name").trim();
+    const id = isEdit ? c.id : (()=>{
+      let base = fd.get("id").trim() || slugify(name), s = base, i=1;
+      while(KK.categories.some(x=>x.id===s)){ s = base+"-"+(++i); }
+      return s;
+    })();
+    const record = { id, name, icon: fd.get("icon").trim()||"🍽️", color:[fd.get("color1"), fd.get("color2")] };
+    KKSync.saveCategory(record).then(()=>{
+      closeDrawer();
+      toast(isEdit?"Category updated.":"Category added.", "success");
+    }).catch(err=>toast("Save failed: "+err.message, "error"));
+  });
+  openDrawer();
+}
+
+/* ================================================================
+   COUPONS
+   ================================================================ */
+function renderCoupons(c){
+  c.innerHTML = `
+    <div class="toolbar"><div></div><button class="btn btn-primary" id="addCouponBtn">${ICON.plus} Add Coupon</button></div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Code</th><th>Type</th><th>Value</th><th>Min Order</th><th>Description</th><th></th></tr></thead>
+      <tbody id="couponsTbody"></tbody>
+    </table></div>
+    <div class="drawer-overlay" id="formOverlay"></div>
+    <aside class="form-drawer" id="couponDrawer"></aside>`;
+  renderCouponsTable();
+  document.getElementById("addCouponBtn").addEventListener("click", ()=>openCouponDrawer(null));
+  document.getElementById("formOverlay").addEventListener("click", closeDrawer);
+}
+function renderCouponsTable(){
+  const tbody = document.getElementById("couponsTbody");
+  const codes = Object.keys(KK.coupons);
+  if(!codes.length){ tbody.innerHTML = `<tr class="empty-row"><td colspan="6">No coupons yet.</td></tr>`; return; }
+  tbody.innerHTML = codes.map(code=>{
+    const cp = KK.coupons[code];
+    return `<tr>
+      <td class="cell-name">${code}</td>
+      <td><span class="badge badge-gray">${cp.type}</span></td>
+      <td>${cp.type==='flat' ? '₹'+cp.value : cp.value+'%'}${cp.type==='percent' && cp.maxDiscount ? ` (max ₹${cp.maxDiscount})` : ''}</td>
+      <td>₹${cp.minOrder||0}</td>
+      <td class="text-faint">${cp.desc||''}</td>
+      <td><div class="table-actions">
+        <button class="icon-btn" data-edit-coupon="${code}">${ICON.edit}</button>
+        <button class="icon-btn" data-del-coupon="${code}">${ICON.trash}</button>
+      </div></td>
+    </tr>`;
+  }).join("");
+  tbody.querySelectorAll("[data-edit-coupon]").forEach(b=>b.addEventListener("click", ()=>openCouponDrawer(b.dataset.editCoupon)));
+  tbody.querySelectorAll("[data-del-coupon]").forEach(b=>b.addEventListener("click", ()=>{
+    if(!confirm(`Delete coupon "${b.dataset.delCoupon}"?`)) return;
+    KKSync.deleteCoupon(b.dataset.delCoupon).then(()=>toast("Coupon deleted.", "success")).catch(err=>toast("Delete failed: "+err.message, "error"));
+  }));
+}
+function openCouponDrawer(code){
+  const isEdit = !!code;
+  const cp = isEdit ? KK.coupons[code] : { type:"flat", value:50, minOrder:200, maxDiscount:null, desc:"" };
+  const drawer = document.getElementById("couponDrawer");
+  drawer.innerHTML = `
+    <div class="form-drawer-head"><h3 class="section-title" style="margin:0">${isEdit?'Edit':'Add'} Coupon</h3><button class="icon-btn" id="closeCouponDrawer">${ICON.close}</button></div>
+    <div class="form-drawer-body">
+      <form id="couponForm">
+        <div class="field"><label>Coupon Code</label><input name="code" required value="${escAttr(code||'')}" style="text-transform:uppercase" placeholder="e.g. WELCOME50" ${isEdit?'readonly style="opacity:.6;"':''}></div>
+        <div class="field-row">
+          <div class="field"><label>Type</label><select name="type"><option value="flat" ${cp.type==='flat'?'selected':''}>Flat (₹)</option><option value="percent" ${cp.type==='percent'?'selected':''}>Percent (%)</option></select></div>
+          <div class="field"><label>Value</label><input type="number" name="value" min="0" required value="${cp.value}"></div>
+        </div>
+        <div class="field-row">
+          <div class="field"><label>Minimum Order (₹)</label><input type="number" name="minOrder" min="0" value="${cp.minOrder||0}"></div>
+          <div class="field"><label>Max Discount (₹, for % type)</label><input type="number" name="maxDiscount" min="0" value="${cp.maxDiscount ?? ''}"></div>
+        </div>
+        <div class="field"><label>Description</label><input name="desc" value="${escAttr(cp.desc||'')}"></div>
+      </form>
+    </div>
+    <div class="form-drawer-foot"><button class="btn btn-outline" id="cancelCouponBtn">Cancel</button><button class="btn btn-primary" id="saveCouponBtn">Save Coupon</button></div>`;
+  document.getElementById("closeCouponDrawer").addEventListener("click", closeDrawer);
+  document.getElementById("cancelCouponBtn").addEventListener("click", closeDrawer);
+  document.getElementById("saveCouponBtn").addEventListener("click", ()=>{
+    const form = document.getElementById("couponForm");
+    if(!form.reportValidity()) return;
+    const fd = new FormData(form);
+    const newCode = fd.get("code").trim().toUpperCase();
+    if(!newCode){ toast("Coupon code required.", "error"); return; }
+    if(!isEdit && KK.coupons[newCode]){ toast("That coupon code already exists.", "error"); return; }
+    const record = {
+      type: fd.get("type"), value: Number(fd.get("value"))||0, minOrder: Number(fd.get("minOrder"))||0,
+      maxDiscount: fd.get("maxDiscount") ? Number(fd.get("maxDiscount")) : null, desc: fd.get("desc").trim()
+    };
+    KKSync.saveCoupon(newCode, record).then(()=>{
+      closeDrawer();
+      toast(isEdit?"Coupon updated.":"Coupon added.", "success");
+    }).catch(err=>toast("Save failed: "+err.message, "error"));
+  });
+  openDrawer();
+}
+
+/* ================================================================
+   OFFERS (homepage banners)
+   ================================================================ */
+function renderOffers(c){
+  c.innerHTML = `
+    <div class="toolbar"><div></div><button class="btn btn-primary" id="addOfferBtn">${ICON.plus} Add Offer</button></div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Badge</th><th>Title</th><th>Description</th><th>Code</th><th></th></tr></thead>
+      <tbody id="offersTbody"></tbody>
+    </table></div>
+    <div class="drawer-overlay" id="formOverlay"></div>
+    <aside class="form-drawer" id="offerDrawer"></aside>`;
+  renderOffersTable();
+  document.getElementById("addOfferBtn").addEventListener("click", ()=>openOfferDrawer(null));
+  document.getElementById("formOverlay").addEventListener("click", closeDrawer);
+}
+function renderOffersTable(){
+  const tbody = document.getElementById("offersTbody");
+  if(!KK.offers.length){ tbody.innerHTML = `<tr class="empty-row"><td colspan="5">No offers yet.</td></tr>`; return; }
+  tbody.innerHTML = KK.offers.map(o=>`
+    <tr>
+      <td><span class="badge badge-marigold">${o.badge}</span></td>
+      <td class="cell-name">${o.title}</td>
+      <td class="text-faint">${o.desc}</td>
+      <td>${o.code ? `<span class="badge badge-gray">${o.code}</span>` : '—'}</td>
+      <td><div class="table-actions">
+        <button class="icon-btn" data-edit-offer="${o.id}">${ICON.edit}</button>
+        <button class="icon-btn" data-del-offer="${o.id}">${ICON.trash}</button>
+      </div></td>
+    </tr>`).join("");
+  tbody.querySelectorAll("[data-edit-offer]").forEach(b=>b.addEventListener("click", ()=>openOfferDrawer(KK.offers.find(x=>x.id===b.dataset.editOffer))));
+  tbody.querySelectorAll("[data-del-offer]").forEach(b=>b.addEventListener("click", ()=>{
+    if(!confirm("Delete this offer?")) return;
+    KKSync.deleteOffer(b.dataset.delOffer).then(()=>toast("Offer deleted.", "success")).catch(err=>toast("Delete failed: "+err.message, "error"));
+  }));
+}
+function openOfferDrawer(offer){
+  const isEdit = !!offer;
+  const o = offer || { id:"", title:"", desc:"", badge:"", theme:"offer-1", code:"" };
+  const drawer = document.getElementById("offerDrawer");
+  drawer.innerHTML = `
+    <div class="form-drawer-head"><h3 class="section-title" style="margin:0">${isEdit?'Edit':'Add'} Offer</h3><button class="icon-btn" id="closeOfferDrawer">${ICON.close}</button></div>
+    <div class="form-drawer-body">
+      <form id="offerForm">
+        <div class="field"><label>Badge Text</label><input name="badge" required value="${escAttr(o.badge)}" placeholder="e.g. Today Only"></div>
+        <div class="field"><label>Title</label><input name="title" required value="${escAttr(o.title)}"></div>
+        <div class="field"><label>Description</label><input name="desc" required value="${escAttr(o.desc)}"></div>
+        <div class="field"><label>Color Theme</label>
+          <select name="theme">
+            <option value="offer-1" ${o.theme==='offer-1'?'selected':''}>Marigold</option>
+            <option value="offer-2" ${o.theme==='offer-2'?'selected':''}>Maroon</option>
+            <option value="offer-3" ${o.theme==='offer-3'?'selected':''}>Sage Green</option>
+            <option value="offer-4" ${o.theme==='offer-4'?'selected':''}>Dark</option>
+          </select>
+        </div>
+        <div class="field"><label>Coupon Code (optional)</label><input name="code" value="${escAttr(o.code||'')}" style="text-transform:uppercase"></div>
+      </form>
+    </div>
+    <div class="form-drawer-foot"><button class="btn btn-outline" id="cancelOfferBtn">Cancel</button><button class="btn btn-primary" id="saveOfferBtn">Save Offer</button></div>`;
+  document.getElementById("closeOfferDrawer").addEventListener("click", closeDrawer);
+  document.getElementById("cancelOfferBtn").addEventListener("click", closeDrawer);
+  document.getElementById("saveOfferBtn").addEventListener("click", ()=>{
+    const form = document.getElementById("offerForm");
+    if(!form.reportValidity()) return;
+    const fd = new FormData(form);
+    const record = {
+      id: isEdit ? o.id : "o" + Date.now(),
+      title: fd.get("title").trim(), desc: fd.get("desc").trim(), badge: fd.get("badge").trim(),
+      theme: fd.get("theme"), code: fd.get("code").trim().toUpperCase() || null
+    };
+    KKSync.saveOffer(record).then(()=>{
+      closeDrawer();
+      toast(isEdit?"Offer updated.":"Offer added.", "success");
+    }).catch(err=>toast("Save failed: "+err.message, "error"));
+  });
+  openDrawer();
+}
+
+/* ================================================================
+   ORDERS (all customers — direct Firestore listener, see startAdminOrdersListener)
+   ================================================================ */
+const STATUS_LIST = ["Order Placed","Order Confirmed","Preparing Your Food","Out for Delivery","Delivered","Cancelled"];
+function renderOrders(c){
+  c.innerHTML = `
+    <div class="table-wrap"><table>
+      <thead><tr><th></th><th>Order ID</th><th>Date</th><th>Customer</th><th>Items</th><th>Total</th><th>Payment</th><th>Status</th></tr></thead>
+      <tbody id="ordersTbody">
+        ${!adminOrders.length ? `<tr class="empty-row"><td colspan="8">No orders placed yet.</td></tr>` : adminOrders.map(o=>`
+          <tr data-order-row="${o.id}" style="cursor:pointer;">
+            <td><span class="text-faint" data-expand="${o.id}">▸</span></td>
+            <td class="cell-name">#${o.id.slice(0,8)}</td>
+            <td>${o.date ? new Date(o.date).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}) : '—'}</td>
+            <td>${o.address ? o.address.name : (o.userEmail || '—')}</td>
+            <td>${(o.items||[]).reduce((s,l)=>s+l.qty,0)}</td>
+            <td>₹${o.total}</td>
+            <td class="text-faint" style="text-transform:uppercase;font-size:11.5px;">${o.payment||'—'}</td>
+            <td><select class="status-select" data-status="${o.id}">${STATUS_LIST.map(s=>`<option value="${s}" ${o.status===s?'selected':''}>${s}</option>`).join("")}</select></td>
+          </tr>
+          <tr id="detail-${o.id}" style="display:none;"><td colspan="8" class="order-detail">
+            <div class="order-detail-grid">
+              <div><h5>Items</h5>${(o.items||[]).map(l=>`<div class="order-item-line"><span>${l.qty} × ${l.name}</span><span>₹${(l.price + (l.addons||[]).reduce((s,a)=>s+a.price,0)) * l.qty}</span></div>`).join("")}</div>
+              <div><h5>Delivery Address</h5><p style="font-size:13px;">${o.address ? `${o.address.name} · ${o.address.phone}<br>${o.address.house}, ${o.address.street}, ${o.address.city} - ${o.address.pincode}` : 'No address on file'}</p>
+                <h5 class="mt-16">Totals</h5>
+                <div class="order-item-line"><span>Subtotal</span><span>₹${o.subtotal}</span></div>
+                ${o.discount ? `<div class="order-item-line"><span>Discount ${o.coupon?`(${o.coupon})`:''}</span><span>−₹${o.discount}</span></div>` : ''}
+                <div class="order-item-line"><span>Delivery</span><span>${o.deliveryFee?('₹'+o.deliveryFee):'FREE'}</span></div>
+                <div class="order-item-line"><span>Tax</span><span>₹${o.tax}</span></div>
+                <div class="order-item-line" style="font-weight:800;"><span>Total</span><span>₹${o.total}</span></div>
+              </div>
+            </div>
+          </td></tr>`).join("")}
+      </tbody>
+    </table></div>`;
+
+  document.querySelectorAll("[data-order-row]").forEach(row=>{
+    row.addEventListener("click", (e)=>{
+      if(e.target.closest("select")) return;
+      const id = row.dataset.orderRow;
+      const detail = document.getElementById("detail-"+id);
+      const expandIcon = row.querySelector("[data-expand]");
+      const open = detail.style.display !== "none";
+      detail.style.display = open ? "none" : "table-row";
+      expandIcon.textContent = open ? "▸" : "▾";
+    });
+  });
+  document.querySelectorAll("[data-status]").forEach(sel=>{
+    sel.addEventListener("click", e=>e.stopPropagation());
+    sel.addEventListener("change", ()=>{
+      db.collection("orders").doc(sel.dataset.status).update({ status: sel.value })
+        .then(()=>toast(`Order marked "${sel.value}".`, "success"))
+        .catch(err=>toast("Update failed: "+err.message, "error"));
+    });
+  });
+}
+
+/* ================================================================
+   SITE SETTINGS
+   ================================================================ */
+function renderSettings(c){
+  const cfg = KK.config;
+  c.innerHTML = `
+    <div class="card mb-16">
+      <h3 class="section-title">Business Information</h3>
+      <form id="settingsForm">
+        <div class="form-grid-2">
+          <div class="field"><label>Brand Name</label><input name="brandName" value="${escAttr(cfg.brandName)}"></div>
+          <div class="field"><label>Location</label><input name="brandLocation" value="${escAttr(cfg.brandLocation)}"></div>
+        </div>
+        <div class="field"><label>Tagline</label><input name="tagline" value="${escAttr(cfg.tagline)}"></div>
+        <div class="form-grid-2">
+          <div class="field"><label>Phone</label><input name="phone" value="${escAttr(cfg.phone)}"></div>
+          <div class="field"><label>WhatsApp Number (with country code, no +)</label><input name="whatsapp" value="${escAttr(cfg.whatsapp)}"></div>
+        </div>
+        <div class="field"><label>Email</label><input name="email" type="email" value="${escAttr(cfg.email)}"></div>
+        <div class="field"><label>Address</label><input name="address" value="${escAttr(cfg.address)}"></div>
+        <div class="field"><label>Business Hours</label><input name="hours" value="${escAttr(cfg.hours)}"></div>
+        <div class="divider"></div>
+        <div class="form-grid-2">
+          <div class="field"><label>Delivery Fee (₹)</label><input type="number" name="deliveryFee" min="0" value="${cfg.deliveryFee}"></div>
+          <div class="field"><label>Free Delivery Above (₹)</label><input type="number" name="freeDeliveryThreshold" min="0" value="${cfg.freeDeliveryThreshold}"></div>
+        </div>
+        <div class="field"><label>Tax Rate (e.g. 0.05 for 5%)</label><input type="number" step="0.01" min="0" max="1" name="taxRate" value="${cfg.taxRate}"></div>
+        <button class="btn btn-primary" type="submit">Save Business Info</button>
+      </form>
+    </div>
+
+    <div class="card mb-16">
+      <h3 class="section-title">Storefront Link</h3>
+      <p class="text-muted mb-16" style="font-size:13px;">Where "View Site" in the sidebar should point (only used by this admin browser).</p>
+      <form id="storefrontForm" class="flex gap-12" style="align-items:flex-end;">
+        <div class="field" style="flex:1;margin-bottom:0;"><label>Storefront URL</label><input name="storefrontUrl" value="${escAttr(localStorage.getItem(ADMIN_STOREFRONT_KEY) || 'index.html')}" placeholder="index.html"></div>
+        <button class="btn btn-outline" type="submit">Save</button>
+      </form>
+    </div>
+
+    <div class="card">
+      <h3 class="section-title">Security</h3>
+      <p class="text-muted mb-16" style="font-size:13px;">Change your admin login password. If this fails with a "please log out and back in" message, that's Firebase requiring a fresh session for security-sensitive changes.</p>
+      <form id="pwForm">
+        <div class="field"><label>New Password</label><input type="password" name="newPw" required minlength="6"></div>
+        <div class="field"><label>Confirm New Password</label><input type="password" name="confirmPw" required minlength="6"></div>
+        <button class="btn btn-outline" type="submit">Change Password</button>
+      </form>
+      <hr class="divider">
+      <p class="text-muted mb-16" style="font-size:13px;">To add another admin, create their account in Firebase Authentication, then add their UID as a document in the "admins" Firestore collection.</p>
+    </div>`;
+
+  document.getElementById("settingsForm").addEventListener("submit", e=>{
+    e.preventDefault();
+    const fd = new FormData(e.target);
+    const updated = {
+      brandName: fd.get("brandName"), brandLocation: fd.get("brandLocation"), tagline: fd.get("tagline"),
+      phone: fd.get("phone"), whatsapp: fd.get("whatsapp"), email: fd.get("email"), address: fd.get("address"),
+      hours: fd.get("hours"), deliveryFee: Number(fd.get("deliveryFee"))||0,
+      freeDeliveryThreshold: Number(fd.get("freeDeliveryThreshold"))||0, taxRate: Number(fd.get("taxRate"))||0
+    };
+    KKSync.saveConfig(updated).then(()=>toast("Business info saved.", "success")).catch(err=>toast("Save failed: "+err.message, "error"));
+  });
+
+  document.getElementById("storefrontForm").addEventListener("submit", e=>{
+    e.preventDefault();
+    const url = new FormData(e.target).get("storefrontUrl").trim() || "index.html";
+    localStorage.setItem(ADMIN_STOREFRONT_KEY, url);
+    document.querySelectorAll("#viewSiteLink, .topbar-actions a").forEach(a=>a.href = url);
+    toast("Storefront link saved.", "success");
+  });
+
+  document.getElementById("pwForm").addEventListener("submit", e=>{
+    e.preventDefault();
+    const fd = new FormData(e.target);
+    if(fd.get("newPw") !== fd.get("confirmPw")){ toast("New passwords don't match.", "error"); return; }
+    auth.currentUser.updatePassword(fd.get("newPw")).then(()=>{
+      e.target.reset();
+      toast("Password changed.", "success");
+    }).catch(err=>toast(friendlyAuthError(err), "error"));
+  });
+}
+
+/* ================================================================
+   DATA & BACKUP
+   ================================================================ */
+function renderData(c){
+  c.innerHTML = `
+    <div class="data-actions">
+      <div class="data-action-card">
+        <h4>Seed Database</h4>
+        <p>First time setting up? Load the built-in starter catalog (30+ dishes, categories, coupons, offers) into Firestore.</p>
+        <button class="btn btn-primary" id="seedBtn">Seed Starter Catalog</button>
+      </div>
+      <div class="data-action-card">
+        <h4>Export All Data</h4>
+        <p>Download a JSON snapshot of your products, categories, coupons, offers, site settings and orders.</p>
+        <button class="btn btn-outline" id="exportBtn">Download Backup (.json)</button>
+      </div>
+      <div class="data-action-card">
+        <h4>Import Data</h4>
+        <p>Restore from a previously exported JSON file. This overwrites matching documents in Firestore.</p>
+        <input type="file" id="importFile" accept="application/json" style="margin-bottom:12px;font-size:13px;">
+        <button class="btn btn-outline" id="importBtn">Import &amp; Restore</button>
+      </div>
+      <div class="data-action-card">
+        <h4>Reset a Section</h4>
+        <p>Clear a section in Firestore and reload it with the built-in defaults.</p>
+        <div class="flex gap-8" style="flex-wrap:wrap;">
+          <button class="btn btn-outline btn-sm" data-reset="products">Products</button>
+          <button class="btn btn-outline btn-sm" data-reset="categories">Categories</button>
+          <button class="btn btn-outline btn-sm" data-reset="coupons">Coupons</button>
+          <button class="btn btn-outline btn-sm" data-reset="offers">Offers</button>
+          <button class="btn btn-outline btn-sm" data-reset="config">Site Settings</button>
+        </div>
+      </div>
+    </div>`;
+
+  document.getElementById("seedBtn").addEventListener("click", ()=>{
+    if(!confirm("Load the starter catalog into Firestore? Existing documents with matching IDs will be overwritten.")) return;
+    KKSync.seedAll().then(()=>toast("Starter catalog loaded.", "success")).catch(err=>toast("Seed failed: "+err.message, "error"));
+  });
+
+  document.getElementById("exportBtn").addEventListener("click", ()=>{
+    const payload = {
+      exportedAt: new Date().toISOString(),
+      products: KK.products, categories: KK.categories, coupons: KK.coupons, offers: KK.offers, config: KK.config,
+      orders: adminOrders
+    };
+    const blob = new Blob([JSON.stringify(payload, null, 2)], { type:"application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url; a.download = "kaurs-kitchen-backup-" + new Date().toISOString().slice(0,10) + ".json";
+    document.body.appendChild(a); a.click(); a.remove();
+    URL.revokeObjectURL(url);
+    toast("Backup downloaded.", "success");
+  });
+
+  document.getElementById("importBtn").addEventListener("click", ()=>{
+    const file = document.getElementById("importFile").files[0];
+    if(!file){ toast("Choose a JSON file first.", "error"); return; }
+    const reader = new FileReader();
+    reader.onload = () => {
+      try{
+        const data = JSON.parse(reader.result);
+        const batch = db.batch();
+        (data.products||[]).forEach(p => batch.set(db.collection("products").doc(p.slug), p));
+        (data.categories||[]).forEach(cat => batch.set(db.collection("categories").doc(cat.id), cat));
+        Object.entries(data.coupons||{}).forEach(([code,cp]) => batch.set(db.collection("coupons").doc(code), cp));
+        (data.offers||[]).forEach(o => batch.set(db.collection("offers").doc(o.id), o));
+        if(data.config) batch.set(db.collection("settings").doc("site"), data.config);
+        batch.commit().then(()=>toast("Data imported.", "success")).catch(err=>toast("Import failed: "+err.message, "error"));
+      }catch(e){
+        toast("That file doesn't look like a valid backup.", "error");
+      }
+    };
+    reader.readAsText(file);
+  });
+
+  c.querySelectorAll("[data-reset]").forEach(btn=>{
+    btn.addEventListener("click", ()=>{
+      if(!confirm(`Reset ${btn.dataset.reset} to defaults in Firestore? Your edits in this section will be lost.`)) return;
+      KKSync.resetSection(btn.dataset.reset).then(()=>toast("Reset complete.", "success")).catch(err=>toast("Reset failed: "+err.message, "error"));
+    });
+  });
+}
+
+/* ================================================================
+   DRAWER HELPERS
+   ================================================================ */
+function openDrawer(){
+  document.getElementById("formOverlay").classList.add("open");
+  document.querySelectorAll(".form-drawer").forEach(d=>{ if(d.innerHTML.trim()) d.classList.add("open"); });
+}
+function closeDrawer(){
+  const overlay = document.getElementById("formOverlay");
+  if(overlay) overlay.classList.remove("open");
+  document.querySelectorAll(".form-drawer").forEach(d=>d.classList.remove("open"));
+}
+function escAttr(str){ return String(str==null?"":str).replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;"); }
+
+</script>
+
+<script>
+  KKSync.start();
+</script>
+</body>
+</html>
